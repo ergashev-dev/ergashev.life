@@ -191,7 +191,7 @@ const BlogPost = () => {
           <div className="row article-wrapper justify-center align-top">
             <div className="article-header col-md-8">
               <h1 className="title">
-                {loading ? <span style={{ opacity: 0.5 }}>Yuklanmoqda...</span> : <span dangerouslySetInnerHTML={{ __html: blog.title }} />}
+                {loading ? <span style={{ opacity: 0.5 }}>Loading...</span> : <span dangerouslySetInnerHTML={{ __html: blog.title }} />}
               </h1>
               <div className="date">
                 <span>
@@ -221,7 +221,7 @@ const BlogPost = () => {
 
             <article className="content col-md-8 col-12">
               {loading ? (
-                <p style={{ color: '#888' }}>Maqola mazmuni yuklanmoqda...</p>
+                <p style={{ color: '#888' }}>Loading article content...</p>
               ) : (
                 blog.content ? blog.content.map((node, i) => renderNode(node, i)) : null
               )}
