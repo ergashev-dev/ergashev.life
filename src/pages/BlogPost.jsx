@@ -298,15 +298,6 @@ const BlogPost = () => {
                       Telegram
                     </a>
                     <a
-                      className="share-btn share-tw"
-                      href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(currentUrl)}&text=${encodeURIComponent(postTitle)}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      title="Share on Twitter / X"
-                    >
-                      Twitter / X
-                    </a>
-                    <a
                       className="share-btn share-li"
                       href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(currentUrl)}`}
                       target="_blank"
