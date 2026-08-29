@@ -60,6 +60,7 @@ const BlogPost = () => {
   const [nextPost, setNextPost] = useState(null);
   const [scrollProgress, setScrollProgress] = useState(0);
   const [copied, setCopied] = useState(false);
+  const [activeImage, setActiveImage] = useState(null);
 
   useSEO({
     title: blog?.title || 'Loading Article...',
@@ -69,6 +70,18 @@ const BlogPost = () => {
     type: 'article',
     url: window.location.href,
   });
+
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        setActiveImage(null);
+      }
+    };
+    if (activeImage) {
+      window.addEventListener('keydown', handleKeyDown);
+    }
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [activeImage]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -193,6 +206,12 @@ const BlogPost = () => {
       props.src.startsWith('/')
     ) {
       props.src = 'https://telegra.ph' + props.src;
+    }
+
+    if (tag === 'img') {
+      props.onClick = () => setActiveImage({ src: props.src, alt: props.alt || '' });
+      props.title = 'Click to enlarge';
+      props.style = { cursor: 'zoom-in', ...props.style };
     }
 
     if (tag === 'iframe' && props.src && props.src.includes('/embed/telegram')) {
@@ -358,6 +377,35 @@ const BlogPost = () => {
         </div>
       </section>
 
+      {/* Lightbox / Zoom Modal */}
+      {activeImage && (
+        <div
+          className="lightbox-overlay"
+          onClick={() => setActiveImage(null)}
+          role="dialog"
+          aria-modal="true"
+        >
+          <div className="lightbox-container" onClick={(e) => e.stopPropagation()}>
+            <button
+              className="lightbox-close"
+              onClick={() => setActiveImage(null)}
+              type="button"
+              aria-label="Close image preview"
+            >
+              &times;
+            </button>
+            <img
+              className="lightbox-image"
+              src={activeImage.src}
+              alt={activeImage.alt || 'Zoomed image'}
+            />
+            {activeImage.alt && (
+              <div className="lightbox-caption">{activeImage.alt}</div>
+            )}
+          </div>
+        </div>
+      )}
+
       <div className="progress-bar">
         <div className="bar" style={{ width: `${scrollProgress}%` }}></div>
       </div>
@@ -366,4 +414,5 @@ const BlogPost = () => {
 };
 
 export default BlogPost;
+
 
