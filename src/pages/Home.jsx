@@ -2,9 +2,15 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import profilePic from '../assets/images/alijonov.jpg';
 import useStaggerAnimation from '../hooks/useStaggerAnimation';
+import useSEO from '../hooks/useSEO';
 
 const Home = ({ socialLinks }) => {
   const animRef = useStaggerAnimation();
+
+  useSEO({
+    title: 'Abdulbosit Alijonov',
+    description: 'Backend Developer from Uzbekistan. I write about non-technical stuff in the technical world.',
+  });
 
   return (
     <section id="home" className="flex align-items-center">

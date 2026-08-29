@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import axios from 'axios';
-
-const TELEGRAPH_TOKEN = import.meta.env.VITE_TELEGRAPH_TOKEN;
+import { getTelegraphPost, getTelegraphPageList } from '../utils/telegraph';
+import useSEO from '../hooks/useSEO';
+import NotFound from './NotFound';
 
 const getTelegramPostId = (src) => {
   try {
@@ -15,7 +15,7 @@ const getTelegramPostId = (src) => {
       }
     }
   } catch (e) {
-    console.error("Error parsing telegram embed URL:", e);
+    console.error('Error parsing telegram embed URL:', e);
   }
   return null;
 };
@@ -25,32 +25,29 @@ const TelegramEmbed = ({ post }) => {
 
   useEffect(() => {
     if (!containerRef.current) return;
-    
-    // Clear container
+
     containerRef.current.innerHTML = '';
-    
-    // Create script element
     const script = document.createElement('script');
     script.src = 'https://telegram.org/js/telegram-widget.js?24';
     script.async = true;
     script.setAttribute('data-telegram-post', post);
     script.setAttribute('data-width', '100%');
     script.setAttribute('data-userpic', 'true');
-    
+
     containerRef.current.appendChild(script);
   }, [post]);
 
   return (
-    <div 
-      ref={containerRef} 
-      className="telegram-embed-container" 
-      style={{ 
-        width: '100%', 
-        minHeight: '150px', 
-        display: 'flex', 
+    <div
+      ref={containerRef}
+      className="telegram-embed-container"
+      style={{
+        width: '100%',
+        minHeight: '150px',
+        display: 'flex',
         justifyContent: 'center',
-        margin: '20px 0' 
-      }} 
+        margin: '20px 0',
+      }}
     />
   );
 };
@@ -62,6 +59,16 @@ const BlogPost = () => {
   const [prevPost, setPrevPost] = useState(null);
   const [nextPost, setNextPost] = useState(null);
   const [scrollProgress, setScrollProgress] = useState(0);
+  const [copied, setCopied] = useState(false);
+
+  useSEO({
+    title: blog?.title || 'Loading Article...',
+    description:
+      blog?.description ||
+      'Read this article on Abdulbosit Alijonov\'s blog.',
+    type: 'article',
+    url: window.location.href,
+  });
 
   useEffect(() => {
     const handleScroll = () => {
@@ -81,59 +88,73 @@ const BlogPost = () => {
   }, [loading]);
 
   useEffect(() => {
+    let isMounted = true;
+
+    const updatePagination = (pagesList) => {
+      const currentIndex = pagesList.findIndex((p) => p.path === slug);
+      if (currentIndex !== -1) {
+        if (currentIndex < pagesList.length - 1) {
+          setPrevPost(pagesList[currentIndex + 1]);
+        } else {
+          setPrevPost(null);
+        }
+
+        if (currentIndex > 0) {
+          setNextPost(pagesList[currentIndex - 1]);
+        } else {
+          setNextPost(null);
+        }
+      }
+    };
+
     const fetchPostAndPagination = async () => {
       try {
         setLoading(true);
-        // Fetch current post
-        const response = await axios.get(`https://api.telegra.ph/getPage/${slug}?return_content=true`);
-        if (response.data.ok) {
-          const pageTitle = response.data.result.title.toLowerCase();
-          if (pageTitle.includes('deleted') || pageTitle === "o'chirilgan" || pageTitle === "ochirilgan") {
-            setBlog(null);
-            setLoading(false);
-            return;
+
+        const postData = await getTelegraphPost(slug, (freshPost) => {
+          if (isMounted && freshPost) {
+            setBlog(freshPost);
           }
+        });
+        if (!isMounted) return;
 
-          setBlog(response.data.result);
-          document.title = response.data.result.title + " - Abdulbosit Alijonov";
-
-          // Fetch list to find previous and next
-          const listResponse = await axios.get(`https://api.telegra.ph/getPageList?access_token=${TELEGRAPH_TOKEN}&limit=100`);
-          if (listResponse.data.ok) {
-            const pages = listResponse.data.result.pages.filter(page => {
-              const t = page.title.toLowerCase();
-              return !t.includes('deleted') && t !== "o'chirilgan" && t !== "ochirilgan";
-            });
-            const currentIndex = pages.findIndex(p => p.path === slug);
-
-            if (currentIndex !== -1) {
-              // Pages are ordered newest first.
-              // So older post is at index + 1 (Previous chronologically)
-              // Newer post is at index - 1 (Next chronologically)
-              if (currentIndex < pages.length - 1) {
-                setPrevPost(pages[currentIndex + 1]);
-              } else {
-                setPrevPost(null);
-              }
-
-              if (currentIndex > 0) {
-                setNextPost(pages[currentIndex - 1]);
-              } else {
-                setNextPost(null);
-              }
-            }
-          }
-        } else {
+        if (!postData) {
           setBlog(null);
+          setLoading(false);
+          return;
         }
+
+        setBlog(postData);
+
+        const pages = await getTelegraphPageList((freshPages) => {
+          if (isMounted && freshPages) {
+            updatePagination(freshPages);
+          }
+        });
+        if (!isMounted) return;
+
+        updatePagination(pages);
       } catch (error) {
-        console.error("Error fetching post:", error);
+        console.error('Error fetching post:', error);
+        if (isMounted) setBlog(null);
       } finally {
-        setLoading(false);
+        if (isMounted) setLoading(false);
       }
     };
+
     fetchPostAndPagination();
+
+    return () => {
+      isMounted = false;
+    };
   }, [slug]);
+
+  const handleCopyLink = () => {
+    navigator.clipboard.writeText(window.location.href).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    });
+  };
 
   const renderNode = (node, index) => {
     if (typeof node === 'string') {
@@ -143,15 +164,18 @@ const BlogPost = () => {
     const Tag = tag;
 
     if (tag === 'p') {
-      const isEmpty = !children || children.length === 0 || children.every(child => {
-        if (typeof child === 'string') {
-          return child.trim() === '';
-        }
-        if (child && typeof child === 'object') {
-          return child.tag === 'br';
-        }
-        return false;
-      });
+      const isEmpty =
+        !children ||
+        children.length === 0 ||
+        children.every((child) => {
+          if (typeof child === 'string') {
+            return child.trim() === '';
+          }
+          if (child && typeof child === 'object') {
+            return child.tag === 'br';
+          }
+          return false;
+        });
       if (isEmpty) {
         return null;
       }
@@ -163,7 +187,11 @@ const BlogPost = () => {
       delete props.class;
     }
 
-    if ((tag === 'img' || tag === 'iframe' || tag === 'video') && props.src && props.src.startsWith('/')) {
+    if (
+      (tag === 'img' || tag === 'iframe' || tag === 'video') &&
+      props.src &&
+      props.src.startsWith('/')
+    ) {
       props.src = 'https://telegra.ph' + props.src;
     }
 
@@ -181,21 +209,31 @@ const BlogPost = () => {
     );
   };
 
-  if (!loading && !blog) return <div style={{ textAlign: 'center', marginTop: '100px', minHeight: '80vh' }}>Article not found.</div>;
+  if (!loading && !blog) {
+    return <NotFound isPostNotFound={true} />;
+  }
+
+  const currentUrl = typeof window !== 'undefined' ? window.location.href : '';
+  const postTitle = blog?.title || '';
 
   return (
     <>
-
       <section className="flex align-items-start" style={{ minHeight: '80vh' }}>
         <div className="container">
           <div className="row article-wrapper justify-center align-top">
             <div className="article-header col-md-8">
               <h1 className="title">
-                {loading ? <span style={{ opacity: 0.5 }}>Loading...</span> : <span dangerouslySetInnerHTML={{ __html: blog.title }} />}
+                {loading ? (
+                  <span className="skeleton" style={{ width: '85%', height: '36px', display: 'block', marginBottom: '10px' }}></span>
+                ) : (
+                  <span dangerouslySetInnerHTML={{ __html: blog.title }} />
+                )}
               </h1>
               <div className="date">
                 <span>
-                  {loading ? "..." : (() => {
+                  {loading ? (
+                    <span className="skeleton" style={{ width: '130px', height: '18px', display: 'inline-block' }}></span>
+                  ) : (() => {
                     const pathParts = slug.split('-');
                     let month = new Date().toLocaleString('en-US', { month: 'long' });
                     let year = new Date().getFullYear().toString();
@@ -221,17 +259,85 @@ const BlogPost = () => {
 
             <article className="content col-md-8 col-12">
               {loading ? (
-                <p style={{ color: '#888' }}>Loading article content...</p>
+                <div className="article-skeleton" style={{ width: '100%', marginTop: '20px' }}>
+                  <div className="skeleton skeleton-line" style={{ width: '100%', height: '18px', marginBottom: '15px' }}></div>
+                  <div className="skeleton skeleton-line" style={{ width: '96%', height: '18px', marginBottom: '15px' }}></div>
+                  <div className="skeleton skeleton-line" style={{ width: '92%', height: '18px', marginBottom: '25px' }}></div>
+                  <div className="skeleton" style={{ width: '100%', height: '200px', marginBottom: '25px', borderRadius: '8px' }}></div>
+                  <div className="skeleton skeleton-line" style={{ width: '98%', height: '18px', marginBottom: '15px' }}></div>
+                  <div className="skeleton skeleton-line" style={{ width: '90%', height: '18px', marginBottom: '15px' }}></div>
+                  <div className="skeleton skeleton-line" style={{ width: '85%', height: '18px', marginBottom: '15px' }}></div>
+                </div>
               ) : (
                 blog.content ? blog.content.map((node, i) => renderNode(node, i)) : null
               )}
             </article>
 
+            {/* Share Section */}
+            {!loading && blog && (
+              <div className="col-md-8 col-12">
+                <div className="article-share">
+                  <span className="share-title">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <circle cx="18" cy="5" r="3"></circle>
+                      <circle cx="6" cy="12" r="3"></circle>
+                      <circle cx="18" cy="19" r="3"></circle>
+                      <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+                      <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+                    </svg>
+                    Share this article
+                  </span>
+                  <div className="share-buttons">
+                    <a
+                      className="share-btn share-tg"
+                      href={`https://t.me/share/url?url=${encodeURIComponent(currentUrl)}&text=${encodeURIComponent(postTitle)}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      title="Share on Telegram"
+                    >
+                      Telegram
+                    </a>
+                    <a
+                      className="share-btn share-tw"
+                      href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(currentUrl)}&text=${encodeURIComponent(postTitle)}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      title="Share on Twitter / X"
+                    >
+                      Twitter / X
+                    </a>
+                    <a
+                      className="share-btn share-li"
+                      href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(currentUrl)}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      title="Share on LinkedIn"
+                    >
+                      LinkedIn
+                    </a>
+                    <button
+                      className="share-btn share-copy"
+                      onClick={handleCopyLink}
+                      type="button"
+                      title="Copy link to clipboard"
+                    >
+                      Copy Link
+                    </button>
+                    {copied && <div className="share-copy-toast">Copied to clipboard!</div>}
+                  </div>
+                </div>
+              </div>
+            )}
+
             <div className="div col-lg-7 col-md-8 col-12">
-              <div className="subscribe-form " id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form">
+              <div className="subscribe-form" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form">
                 <h6>Subscribe</h6>
                 <p>
-                  You can find my latest articles, lectures, and lessons on my Telegram channel <a href="https://t.me/abdulbosit_alijonov">@abdulbosit_alijonov</a>.
+                  You can find my latest articles, lectures, and lessons on my Telegram channel{' '}
+                  <a href="https://t.me/abdulbosit_alijonov" target="_blank" rel="noreferrer">
+                    @abdulbosit_alijonov
+                  </a>
+                  .
                 </p>
               </div>
             </div>
@@ -245,7 +351,9 @@ const BlogPost = () => {
                     </Link>
                   )}
                 </li>
-                <li className="col"><Link to="/blog">See More</Link></li>
+                <li className="col">
+                  <Link to="/blog">See More</Link>
+                </li>
                 <li className="col next">
                   {nextPost && (
                     <Link to={`/blog/${nextPost.path}`} title={nextPost.title}>
@@ -267,3 +375,4 @@ const BlogPost = () => {
 };
 
 export default BlogPost;
+

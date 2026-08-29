@@ -1,7 +1,13 @@
 import React, { useEffect, useState } from 'react';
+import useSEO from '../hooks/useSEO';
 
 const About = () => {
   const [scrollProgress, setScrollProgress] = useState(0);
+
+  useSEO({
+    title: 'About Me',
+    description: 'I am Abdulbosit Alijonov, a Backend Developer from Uzbekistan specializing in Python, PHP, REST APIs, and Telegram bots.',
+  });
 
   useEffect(() => {
     const handleScroll = () => {
