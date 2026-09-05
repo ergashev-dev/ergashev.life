@@ -379,41 +379,42 @@ footer p {
   box-sizing: border-box;
 }
 #home .about {
-  margin-bottom: 22px;
+  margin-bottom: 26px;
 }
 #home .profile-picture {
-  width: 115px;
-  height: 115px;
+  width: 130px;
+  height: 130px;
   object-fit: cover;
   object-position: center;
   border-radius: 50%;
-  margin-right: 32px;
+  margin-right: 35px;
   flex-shrink: 0;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
 }
 @media (max-width: 767.98px) {
   #home .profile-picture {
-    width: 95px;
-    height: 95px;
+    width: 100px;
+    height: 100px;
     margin-right: 0;
     margin-bottom: 15px;
   }
 }
 #home .about-detail .title {
-  font-size: 38px;
+  font-size: 42px;
   font-weight: 700;
-  line-height: 1.15;
+  line-height: 1.1;
   margin-bottom: 4px;
+  color: rgba(0, 0, 0, 0.85);
 }
 #home .about-detail .desc {
-  font-size: 22px;
-  color: rgba(0, 0, 0, 0.5);
+  font-size: 26px;
+  color: rgba(0, 0, 0, 0.45);
   font-weight: 300;
   margin-bottom: 0;
   line-height: 1.2;
 }
 #home .social-links {
-  margin-top: 12px;
+  margin-top: 14px;
   display: flex;
   align-items: center;
   gap: 12px;
@@ -421,7 +422,6 @@ footer p {
 #home .social-links a {
   margin-right: 0;
   color: #000;
-  font-size: 19px;
   display: inline-flex;
   align-items: center;
   transition: opacity 0.2s ease, transform 0.2s ease;
@@ -437,7 +437,8 @@ footer p {
 #home .detail p.size-big {
   font-size: 20px !important;
   line-height: 1.5;
-  margin-bottom: 24px;
+  margin-bottom: 26px;
+  color: rgba(0, 0, 0, 0.75);
 }
 #home .btns-wrapper .btn {
   padding: 10px 24px;
@@ -449,7 +450,10 @@ footer p {
     width: 100%;
   }
   #home .about-detail .desc {
-    font-size: 20px;
+    font-size: 22px;
+  }
+  #home .about-detail .title {
+    font-size: 32px;
   }
 }
 #post-banner {
