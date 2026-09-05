@@ -441,8 +441,9 @@ footer p {
   color: rgba(0, 0, 0, 0.75);
 }
 #home .btns-wrapper .btn {
-  padding: 10px 24px;
-  font-size: 15px;
+  padding: 7px 32px;
+  font-size: 16px;
+  font-weight: 600;
   border-radius: 4px;
 }
 @media (max-width: 767.98px) {
