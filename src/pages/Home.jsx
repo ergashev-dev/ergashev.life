@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import profilePic from '../assets/images/alijonov.jpg';
+import profilePic from '../assets/images/alijonov.png';
 import useStaggerAnimation from '../hooks/useStaggerAnimation';
 import useSEO from '../hooks/useSEO';
 

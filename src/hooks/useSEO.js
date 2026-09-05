@@ -10,7 +10,7 @@ const DEFAULT_DESCRIPTION =
 export default function useSEO({
   title,
   description = DEFAULT_DESCRIPTION,
-  image = '/alijonov.jpg',
+  image = '/alijonov.png',
   type = 'website',
   url,
 } = {}) {
