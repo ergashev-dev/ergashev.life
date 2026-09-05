@@ -18,7 +18,7 @@ const Home = ({ socialLinks }) => {
             <div className="row justify-between">
                 <div className="col-xl-8 col-lg-10 col-12 stagger-animation" ref={animRef}>
                     <div className="about flex align-items-center">
-                        <img className="anim-item profile-picture align-self-start" src={profilePic} alt="Abdulbosit" />
+                        <img className="anim-item profile-picture" src={profilePic} alt="Abdulbosit" />
                         <div className="about-detail anim-item">
                             <h1 className="title">Abdulbosit Alijonov</h1>
                              <h3 className="desc">Backend developer</h3>

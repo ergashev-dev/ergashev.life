@@ -379,54 +379,78 @@ footer p {
   box-sizing: border-box;
 }
 #home .about {
-  margin-bottom: 35px;
+  margin-bottom: 22px;
 }
 #home .profile-picture {
-  width: 140px;
-  height: 140px;
+  width: 115px;
+  height: 115px;
   object-fit: cover;
   object-position: center;
   border-radius: 50%;
-  margin-right: 40px;
+  margin-right: 32px;
   flex-shrink: 0;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
 }
 @media (max-width: 767.98px) {
   #home .profile-picture {
-    width: 100px;
-    height: 100px;
+    width: 95px;
+    height: 95px;
     margin-right: 0;
     margin-bottom: 15px;
   }
 }
+#home .about-detail .title {
+  font-size: 38px;
+  font-weight: 700;
+  line-height: 1.15;
+  margin-bottom: 4px;
+}
+#home .about-detail .desc {
+  font-size: 22px;
+  color: rgba(0, 0, 0, 0.5);
+  font-weight: 300;
+  margin-bottom: 0;
+  line-height: 1.2;
+}
 #home .social-links {
-  margin-top: 15px;
+  margin-top: 12px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
 #home .social-links a {
-  margin-right: 15px;
+  margin-right: 0;
   color: #000;
-  font-size: 22px;
+  font-size: 19px;
+  display: inline-flex;
+  align-items: center;
+  transition: opacity 0.2s ease, transform 0.2s ease;
 }
-#home .social-links .icon-indiehackers {
-  width: 20px;
-  position: relative;
-  top: -1px;
+#home .social-links a:hover {
+  opacity: 0.7;
+  transform: translateY(-1px);
+}
+#home .social-links a img {
+  width: 19px;
+  height: 19px;
+}
+#home .detail p.size-big {
+  font-size: 20px !important;
+  line-height: 1.5;
+  margin-bottom: 24px;
+}
+#home .btns-wrapper .btn {
+  padding: 10px 24px;
+  font-size: 15px;
+  border-radius: 4px;
 }
 @media (max-width: 767.98px) {
   #home .about-detail {
     width: 100%;
   }
   #home .about-detail .desc {
-    font-size: 25px;
+    font-size: 20px;
   }
-}
-#home .about-detail .title {
-  font-weight: 700;
-  margin-bottom: 3px;
-}
-#home .about-detail .desc {
-  color: rgba(0,0,0,0.5);
-  font-weight: 400;
 }
 #post-banner {
   display: block;
