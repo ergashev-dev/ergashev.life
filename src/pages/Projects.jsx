@@ -89,7 +89,7 @@ const Projects = () => {
             >
               <h6>Subscribe</h6>
               <p>
-                You can find my latest articles, lectures, and project updates on my Telegram channel{' '}
+                You can find my latest articles, lectures, and lessons on my Telegram channel{' '}
                 <a
                   href="https://t.me/abdulbosit_alijonov"
                   target="_blank"
