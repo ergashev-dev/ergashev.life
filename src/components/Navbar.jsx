@@ -22,6 +22,7 @@ const Navbar = ({ settings }) => {
                 </div>
                 <ul className="nav align-items-center">
                     {settings?.resume_file && <li><a className="list-item" href={settings.resume_file} target="_blank" rel="noreferrer" onClick={() => setNavOpen(false)}>Resume</a></li>}
+                    <li><Link className="list-item" to="/projects" onClick={() => setNavOpen(false)}>Projects</Link></li>
                     <li><Link className="list-item" to="/blog" onClick={() => setNavOpen(false)}>Blog</Link></li>
                     <li><Link className="list-item" to="/about" onClick={() => setNavOpen(false)}>About</Link></li>
                     {settings?.telegram_channel && <li><a className="list-item" href={settings.telegram_channel} target="_blank" rel="noreferrer" onClick={() => setNavOpen(false)}>Channel</a></li>}

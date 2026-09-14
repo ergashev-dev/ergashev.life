@@ -4,6 +4,7 @@ import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import Home from './pages/Home';
 import About from './pages/About';
+import Projects from './pages/Projects';
 import BlogList from './pages/BlogList';
 import BlogPost from './pages/BlogPost';
 import NotFound from './pages/NotFound';
@@ -61,6 +62,7 @@ function App() {
       <Navbar settings={settings} />
       <Routes location={location}>
         <Route path="/" element={<Home socialLinks={socialLinks} />} />
+        <Route path="/projects" element={<Projects />} />
         <Route path="/about" element={<About />} />
         <Route path="/blog" element={<BlogList settings={settings} />} />
         <Route path="/blog/:slug" element={<BlogPost settings={settings} />} />
