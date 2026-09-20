@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import useSEO from '../hooks/useSEO';
 import { projects } from '../data/projects';
 
@@ -91,11 +91,11 @@ const Projects = () => {
               <p>
                 You can find my latest articles, lectures, and lessons on my Telegram channel{' '}
                 <a
-                  href="https://t.me/abdulbosit_alijonov"
+                  href="https://t.me/ergashevdev"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  @abdulbosit_alijonov
+                  @ergashevdev
                 </a>
                 .
               </p>

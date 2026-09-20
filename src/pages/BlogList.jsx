@@ -10,7 +10,7 @@ const BlogList = () => {
 
   useSEO({
     title: 'Blog',
-    description: 'Explore articles, tutorials, and tech insights by Abdulbosit Alijonov.',
+    description: 'Explore articles, tutorials, and tech insights by Abdurashid Ergashev.',
   });
 
   useEffect(() => {
@@ -169,12 +169,12 @@ const BlogList = () => {
               <p>
                 You can find my latest articles, lectures, and lessons on my Telegram channel{' '}
                 <a
-                  href="https://t.me/abdulbosit_alijonov"
+                  href="https://t.me/ergashevdev"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  @abdulbosit_alijonov
-                </a>
+                  @ergashevdev
+                </a>``
                 .
               </p>
             </div>

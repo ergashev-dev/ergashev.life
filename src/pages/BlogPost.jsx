@@ -66,7 +66,7 @@ const BlogPost = () => {
     title: blog?.title || 'Loading Article...',
     description:
       blog?.description ||
-      'Read this article on Abdulbosit Alijonov\'s blog.',
+      'Read this article on Ergashevdev\'s blog.',
     type: 'article',
     url: window.location.href,
   });
@@ -344,8 +344,8 @@ const BlogPost = () => {
                 <h6>Subscribe</h6>
                 <p>
                   You can find my latest articles, lectures, and lessons on my Telegram channel{' '}
-                  <a href="https://t.me/abdulbosit_alijonov" target="_blank" rel="noreferrer">
-                    @abdulbosit_alijonov
+                  <a href="https://t.me/ergashevdev" target="_blank" rel="noreferrer">
+                    @ergashevdev
                   </a>
                   .
                 </p>
