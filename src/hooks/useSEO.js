@@ -1,8 +1,8 @@
 import { useEffect } from 'react';
 
-const DEFAULT_TITLE = "Abdulbosit Alijonov's Blog";
+const DEFAULT_TITLE = "Abdurashid Ergashev's Blog";
 const DEFAULT_DESCRIPTION =
-  'I am Abdulbosit Alijonov, a Backend Software Engineer from Uzbekistan with experience in Python and PHP.';
+  'I am Abdurashid Ergashev, a Fullstack Software Engineer from Uzbekistan with experience in PJavaScript, TypeScript, HTML, CSS, HTML5, CSS3, Bootstrap, TailwindCSS, Git, GitHub, Laravel, React.js,';
 
 /**
  * Custom hook for dynamically updating HTML metadata and OpenGraph / Twitter tags
@@ -10,13 +10,13 @@ const DEFAULT_DESCRIPTION =
 export default function useSEO({
   title,
   description = DEFAULT_DESCRIPTION,
-  image = '/alijonov.png',
+  image = '/ergashev.png',
   type = 'website',
   url,
 } = {}) {
   useEffect(() => {
     // 1. Update Title
-    const fullTitle = title ? `${title} - Abdulbosit Alijonov` : DEFAULT_TITLE;
+    const fullTitle = title ? `${title} - Abdurashid Ergashev` : DEFAULT_TITLE;
     document.title = fullTitle;
 
     // Helper to set or create meta tag
