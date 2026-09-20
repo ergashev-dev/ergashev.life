@@ -7,7 +7,7 @@ const Projects = () => {
 
   useSEO({
     title: 'Projects',
-    description: 'Explore featured backend, web applications, and software projects developed by Abdulbosit Alijonov.',
+    description: 'Explore featured Fullstack, web applications, and software projects developed by Abdurashid Ergashev.',
   });
 
   useEffect(() => {
