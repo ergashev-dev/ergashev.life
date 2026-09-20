@@ -12,14 +12,14 @@ import NotFound from './pages/NotFound';
 function App() {
   const [settings] = useState({
     resume_file: '/resume.pdf',
-    telegram_channel: 'https://t.me/abdulbosit_alijonov'
+    telegram_channel: 'https://t.me/ergashevdev'
   });
 
   const [socialLinks] = useState([
-    { platform: 'telegram', url: 'https://t.me/alijonovuz' },
-    { platform: 'github', url: 'https://github.com/alijonovuz' },
-    { platform: 'linkedin', url: 'https://linkedin.com/in/alijonovuz' },
-    { platform: 'instagram', url: 'https://instagram.com/alijonov.uz_' }
+    { platform: 'telegram', url: 'https://t.me/ergashevdev' },
+    { platform: 'github', url: 'https://github.com/ergashev-dev' },
+    { platform: 'linkedin', url: 'https://linkedin.com/in/ergashevdev' },
+    { platform: 'instagram', url: 'https://instagram.com/ergashevdev' }
   ]);
 
   const location = useLocation();

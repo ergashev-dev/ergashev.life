@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import useSEO from '../hooks/useSEO';
 
 const About = () => {
