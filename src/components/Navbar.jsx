@@ -1,41 +1,26 @@
-import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 
 const Navbar = ({ settings }) => {
   const [scrolled, setScrolled] = useState(false);
-  const [navOpen, setNavOpen] = useState(false);
-
+  const [open, setOpen] = useState(false);
+  const location = useLocation();
   useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 0);
-    };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    const onScroll = () => setScrolled(window.scrollY > 24);
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
   }, []);
-
-  return (
-    <header className={`header--title flex align-items-center ${scrolled ? 'show-bg' : ''} ${navOpen ? 'show-nav' : ''}`}>
-      <div className="container">
-        <div className="align-items-center flex">
-          <div className="logo-wrapper">
-            <Link className="logo" to="/">Ergashev's Blog</Link>
-          </div>
-          <ul className="nav align-items-center">
-            {settings?.resume_file && <li><a className="list-item" href={settings.resume_file} target="_blank" rel="noreferrer" onClick={() => setNavOpen(false)}>Resume</a></li>}
-            <li><Link className="list-item" to="/projects" onClick={() => setNavOpen(false)}>Projects</Link></li>
-            <li><Link className="list-item" to="/blog" onClick={() => setNavOpen(false)}>Blog</Link></li>
-            <li><Link className="list-item" to="/about" onClick={() => setNavOpen(false)}>About</Link></li>
-            {settings?.telegram_channel && <li><a className="list-item" href={settings.telegram_channel} target="_blank" rel="noreferrer" onClick={() => setNavOpen(false)}>Channel</a></li>}
-          </ul>
-          <div className="burger-menu" onClick={() => setNavOpen(!navOpen)}>
-            <div className="bar bar--top"></div>
-            <div className="bar bar--middle"></div>
-            <div className="bar bar--bottom"></div>
-          </div>
-        </div>
-      </div>
-    </header>
-  );
+  const close = () => setOpen(false);
+  return <header className={`os-nav ${scrolled ? 'is-scrolled' : ''} ${open ? 'is-open' : ''}`}>
+    <Link className="os-logo" to="/" onClick={close} aria-label="Ergashev home"><span>AE</span><b>ERGASHEV<br />DIGITAL</b></Link>
+    <nav aria-label="Main navigation">
+      <Link className={location.pathname === '/' ? 'active' : ''} to="/" onClick={close}>Home</Link>
+      <Link className={location.pathname === '/projects' ? 'active' : ''} to="/projects" onClick={close}>Projects</Link>
+      <Link className={location.pathname === '/blog' ? 'active' : ''} to="/blog" onClick={close}>Journal</Link>
+      <Link className={location.pathname === '/about' ? 'active' : ''} to="/about" onClick={close}>About</Link>
+    </nav>
+    <a className="nav-cta" href={settings?.telegram_channel} target="_blank" rel="noreferrer">Let’s talk <i>↗</i></a>
+    <button className="nav-toggle" onClick={() => setOpen((value) => !value)} aria-label="Toggle navigation" aria-expanded={open}><span /><span /></button>
+  </header>;
 };
-
 export default Navbar;

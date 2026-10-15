@@ -1,15 +1,6 @@
-const Footer = () => {
-  return (
-    <footer>
-      <div className="container">
-        <div className="row">
-          <p>
-            &copy; {new Date().getFullYear()} ergashev.life
-          </p>
-        </div>
-      </div>
-    </footer>
-  );
-};
-
+const Footer = () => <footer className="os-footer">
+  <span>© {new Date().getFullYear()} Abdurashid Ergashev</span>
+  <span className="footer-status"><i /> All systems operational</span>
+  <a href="#home">Back to top ↑</a>
+</footer>;
 export default Footer;
