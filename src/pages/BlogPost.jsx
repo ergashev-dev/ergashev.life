@@ -68,7 +68,7 @@ const BlogPost = () => {
       blog?.description ||
       'Read this article on Ergashevdev\'s blog.',
     type: 'article',
-    url: window.location.href,
+    url: `/blog/${slug}`,
   });
 
   useEffect(() => {

@@ -6,7 +6,7 @@ import profile from '../data/profile';
 import useSEO from '../hooks/useSEO';
 
 const About = () => {
-  useSEO({ title: 'About — Abdurashid Ergashev', description: 'Meet Abdurashid Ergashev, a fullstack TypeScript developer from Uzbekistan working with React, Next.js, NestJS, Node.js and modern databases.', image: profile.image });
+  useSEO({ title: 'About Abdurashid Ergashev — Fullstack TypeScript Developer', description: 'Meet Abdurashid Ergashev, a fullstack TypeScript developer from Uzbekistan working with React, Next.js, NestJS, Node.js, PostgreSQL and MongoDB.', image: profile.image });
   return <main className="interior-page about-page">
     <InteriorHero index="02" eyebrow="ABOUT ME" title="Code with logic." accent="Design with feeling." description="I build products end to end — from the shape of the data to the feeling of the final interaction." />
     <section className="about-manifesto">

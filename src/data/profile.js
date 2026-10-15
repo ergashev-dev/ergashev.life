@@ -2,7 +2,7 @@ const profile = {
   name: 'Abdurashid Ergashev',
   role: 'Fullstack TypeScript Developer',
   location: 'Uzbekistan',
-  website: 'https://ergashev-life.vercel.app',
+  website: 'https://www.ergashev.life',
   image: '/abdurashid-ergashev.jpg',
   github: 'https://github.com/ergashev-dev',
   githubLabel: 'ergashev-dev',

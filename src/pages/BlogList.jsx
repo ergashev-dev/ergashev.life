@@ -16,7 +16,7 @@ const formatDate = (path) => {
 const BlogList = () => {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
-  useSEO({ title: 'Journal — Abdurashid Ergashev', description: 'Notes about engineering, products, systems and the process behind them.' });
+  useSEO({ title: 'Engineering Journal — Abdurashid Ergashev', description: 'Engineering notes by Abdurashid Ergashev about TypeScript, fullstack development, product decisions, automation and lessons from building Chatly.' });
   useEffect(() => {
     let mounted = true;
     getTelegraphPageList((fresh) => mounted && fresh && setPosts(fresh)).then((items) => mounted && setPosts(items || [])).catch(() => {}).finally(() => mounted && setLoading(false));

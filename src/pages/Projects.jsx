@@ -4,7 +4,7 @@ import InteriorHero from '../components/InteriorHero';
 import useSEO from '../hooks/useSEO';
 
 const Projects = () => {
-  useSEO({ title: 'Projects — Abdurashid Ergashev', description: 'Explore Chatly, an Instagram automation platform designed and engineered by Abdurashid Ergashev.' });
+  useSEO({ title: 'Chatly Project — Abdurashid Ergashev', description: 'Explore Chatly, a SaaS automation product built by Abdurashid Ergashev with React, Node.js, MongoDB and Instagram integrations.' });
   useEffect(() => {
     const element = document.querySelector('.project-device');
     if (!element) return undefined;

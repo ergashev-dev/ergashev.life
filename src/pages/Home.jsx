@@ -66,7 +66,7 @@ const Home = () => {
       <div className="aurora aurora-one" /><div className="aurora aurora-two" />
       <div className="hero-status glass-pill"><span className="live-dot" /> Available for selected work</div>
       <div className="hero-intro fade-up visible">
-        <span className="overline">FULLSTACK DEVELOPER · UZBEKISTAN</span>
+        <span className="overline">ABDURASHID ERGASHEV · FULLSTACK DEVELOPER · UZBEKISTAN</span>
         <h1>Ideas,<br /><span>made tangible.</span></h1>
         <p>I design and engineer digital products with the precision of code and the fluidity of imagination.</p>
         <div className="hero-buttons"><a href="#chatly" className="ios-button primary">Explore work <ArrowRight /></a><a href={profile.resume} target="_blank" rel="noreferrer" className="ios-button glass"><FileText /> View resume</a><a href={profile.telegram} target="_blank" rel="noreferrer" className="ios-button glass">Start a conversation <ArrowUpRight /></a></div>

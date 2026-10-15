@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 
 const DEFAULT_TITLE = 'Abdurashid Ergashev — Fullstack TypeScript Developer';
 const DEFAULT_DESCRIPTION = 'Abdurashid Ergashev is a fullstack TypeScript developer from Uzbekistan building refined web products with React, Next.js, NestJS and Node.js.';
+const SITE_URL = 'https://www.ergashev.life';
 
 /**
  * Custom hook for dynamically updating HTML metadata and OpenGraph / Twitter tags
@@ -12,6 +13,7 @@ export default function useSEO({
   image = '/abdurashid-ergashev.jpg',
   type = 'website',
   url,
+  robots = 'index, follow, max-image-preview:large',
 } = {}) {
   useEffect(() => {
     // 1. Update Title
@@ -32,11 +34,14 @@ export default function useSEO({
       element.setAttribute('content', content);
     };
 
-    const currentUrl = url || window.location.href;
+    const cleanPath = window.location.pathname === '/' ? '/' : window.location.pathname.replace(/\/+$/, '');
+    const currentUrl = url
+      ? new URL(url, SITE_URL).href
+      : `${SITE_URL}${cleanPath}`;
 
     // 2. Standard Meta Tags
     setMetaTag('name', 'description', description);
-    setMetaTag('name', 'robots', 'index, follow, max-image-preview:large');
+    setMetaTag('name', 'robots', robots);
 
     let canonical = document.querySelector('link[rel="canonical"]');
     if (!canonical) {
@@ -54,7 +59,7 @@ export default function useSEO({
     if (image) {
       const fullImageUrl = image.startsWith('http')
         ? image
-        : `${window.location.origin}${image.startsWith('/') ? '' : '/'}${image}`;
+        : `${SITE_URL}${image.startsWith('/') ? '' : '/'}${image}`;
       setMetaTag('property', 'og:image', fullImageUrl);
     }
 
@@ -65,8 +70,8 @@ export default function useSEO({
     if (image) {
       const fullImageUrl = image.startsWith('http')
         ? image
-        : `${window.location.origin}${image.startsWith('/') ? '' : '/'}${image}`;
+        : `${SITE_URL}${image.startsWith('/') ? '' : '/'}${image}`;
       setMetaTag('name', 'twitter:image', fullImageUrl);
     }
-  }, [title, description, image, type, url]);
+  }, [title, description, image, type, url, robots]);
 }
