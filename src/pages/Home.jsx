@@ -1,5 +1,5 @@
 import { lazy, Suspense, useEffect, useState } from 'react';
-import { ArrowRight, ArrowUpRight, Asterisk, Bot, Braces, ChevronDown, Code2, Database, Layers3, MessageCircle, MousePointer2, Phone, Send, Sparkles } from 'lucide-react';
+import { ArrowRight, ArrowUpRight, Asterisk, Bot, Braces, ChevronDown, Code2, Database, FileText, Layers3, MessageCircle, MousePointer2, Phone, Send, Sparkles } from 'lucide-react';
 import githubIcon from '../assets/icons/github.svg';
 import linkedinIcon from '../assets/icons/linkedin.svg';
 import profile from '../data/profile';
@@ -69,7 +69,7 @@ const Home = () => {
         <span className="overline">FULLSTACK DEVELOPER · UZBEKISTAN</span>
         <h1>Ideas,<br /><span>made tangible.</span></h1>
         <p>I design and engineer digital products with the precision of code and the fluidity of imagination.</p>
-        <div className="hero-buttons"><a href="#chatly" className="ios-button primary">Explore work <ArrowRight /></a><a href="https://t.me/ergashevdev" target="_blank" rel="noreferrer" className="ios-button glass">Start a conversation <ArrowUpRight /></a></div>
+        <div className="hero-buttons"><a href="#chatly" className="ios-button primary">Explore work <ArrowRight /></a><a href={profile.resume} target="_blank" rel="noreferrer" className="ios-button glass"><FileText /> View resume</a><a href={profile.telegram} target="_blank" rel="noreferrer" className="ios-button glass">Start a conversation <ArrowUpRight /></a></div>
       </div>
       <Suspense fallback={<div className="scene-loading">Rendering your experience…</div>}><ThreeCore /></Suspense>
       <div className="scene-guide glass-pill"><MousePointer2 /> Move to explore</div>

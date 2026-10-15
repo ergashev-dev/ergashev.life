@@ -10,7 +10,7 @@ import BlogPost from './pages/BlogPost';
 import NotFound from './pages/NotFound';
 import profile from './data/profile';
 
-const settings = { resume_file: '/resume.pdf', telegram_channel: profile.telegram, phone: profile.phone };
+const settings = { resume_file: profile.resume, telegram_channel: profile.telegram, phone: profile.phone };
 
 function App() {
   const location = useLocation();

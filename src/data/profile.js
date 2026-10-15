@@ -9,6 +9,7 @@ const profile = {
   linkedin: 'https://www.linkedin.com/in/ergashevdev',
   linkedinLabel: 'ergashevdev',
   telegram: 'https://t.me/ergashevdev',
+  resume: '/resume.pdf',
   phone: 'tel:+998771492825',
   phoneLabel: '+998 77 149 28 25',
 };
