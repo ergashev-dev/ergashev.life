@@ -1,101 +1,76 @@
-import { lazy, Suspense, useCallback, useEffect, useState } from 'react';
-import { ArrowDownRight, ArrowUpRight, BarChart3, KeyRound, Mail, MessageCircle, Send } from 'lucide-react';
-import { projects } from '../data/projects';
+import { lazy, Suspense, useEffect, useState } from 'react';
+import { ArrowRight, ArrowUpRight, Asterisk, Bot, Braces, ChevronDown, Code2, Database, Layers3, MessageCircle, MousePointer2, Send, Sparkles } from 'lucide-react';
 import profilePic from '../assets/images/ergashev.jpg';
 import useSEO from '../hooks/useSEO';
 
 const ThreeCore = lazy(() => import('../components/ThreeCore'));
-
-const skills = ['JavaScript', 'TypeScript', 'React', 'Node.js', 'REST API', 'MongoDB', 'PostgreSQL', 'Telegram Bots'];
-const commands = {
-  help: 'Available: about, skills, projects, contact, clear',
-  about: 'Fullstack developer from Uzbekistan. I turn complex problems into clear, reliable products.',
-  skills: 'JavaScript · TypeScript · React · Node.js · REST APIs · MongoDB · PostgreSQL',
-  projects: 'Chatly — Instagram automation platform · chatly.uz',
-  contact: 'Telegram: @ergashevdev · GitHub: ergashev-dev',
-};
-
-function BootScreen({ onDone }) {
-  const [progress, setProgress] = useState(0);
-  useEffect(() => {
-    const started = window.setInterval(() => setProgress((value) => Math.min(value + 4, 100)), 28);
-    const finished = window.setTimeout(onDone, 1050);
-    return () => { window.clearInterval(started); window.clearTimeout(finished); };
-  }, [onDone]);
-  return <div className="boot-screen" aria-live="polite">
-    <div className="boot-mark">AE<span>_</span></div><p>INITIALIZING ERGASHEV OS</p>
-    <div className="boot-track"><span style={{ width: `${progress}%` }} /></div>
-    <small>{progress.toString().padStart(3, '0')}% / SYSTEM READY</small>
-  </div>;
-}
-
-function Terminal() {
-  const [history, setHistory] = useState([{ command: 'welcome', output: 'Type “help” and press Enter.' }]);
-  const [value, setValue] = useState('');
-  const submit = (event) => {
-    event.preventDefault(); const command = value.trim().toLowerCase(); if (!command) return;
-    if (command === 'clear') setHistory([]);
-    else setHistory((items) => [...items, { command, output: commands[command] || `Command not found: ${command}` }]);
-    setValue('');
-  };
-  return <div className="terminal-window reveal">
-    <div className="terminal-bar"><span /><span /><span /><b>ergashev@portfolio:~</b></div>
-    <div className="terminal-body">
-      {history.map((item, index) => <div className="terminal-line" key={`${item.command}-${index}`}><p><i>➜</i> ~ {item.command}</p><span>{item.output}</span></div>)}
-      <form onSubmit={submit}><label htmlFor="terminal-input">➜ ~</label><input id="terminal-input" value={value} onChange={(event) => setValue(event.target.value)} autoComplete="off" spellCheck="false" aria-label="Terminal command" /></form>
-    </div>
-  </div>;
-}
+const stack = [
+  { mark: 'TS', name: 'TypeScript', note: 'Type-safe systems', color: '#3178c6' },
+  { mark: 'JS', name: 'JavaScript', note: 'Web foundations', color: '#f7df1e' },
+  { mark: 'N', name: 'NestJS', note: 'Scalable backends', color: '#e0234e' },
+  { mark: '▲', name: 'Next.js', note: 'Full-stack React', color: '#f7f7f7' },
+  { mark: '⚛', name: 'React', note: 'Interactive interfaces', color: '#61dafb' },
+  { mark: '⬡', name: 'Node.js', note: 'Server runtime', color: '#68a063' },
+  { mark: 'DB', name: 'PostgreSQL', note: 'Reliable data', color: '#53a5dd' },
+  { mark: 'M', name: 'MongoDB', note: 'Flexible storage', color: '#4db33d' },
+];
 
 const Home = () => {
-  const [booted, setBooted] = useState(() => sessionStorage.getItem('ergashev-booted') === 'yes');
-  const finishBoot = useCallback(() => { sessionStorage.setItem('ergashev-booted', 'yes'); setBooted(true); }, []);
-  useSEO({ title: 'Abdurashid Ergashev — Fullstack Developer', description: 'Fullstack developer from Uzbekistan building reliable digital products, REST APIs, dashboards and automation.' });
+  const [time, setTime] = useState('');
+  useSEO({ title: 'Abdurashid Ergashev — Fullstack Developer', description: 'Fullstack developer crafting spatial interfaces, reliable backends and automation products with TypeScript, JavaScript, NestJS and Next.js.' });
   useEffect(() => {
-    const observer = new IntersectionObserver((entries) => entries.forEach((entry) => entry.isIntersecting && entry.target.classList.add('is-visible')), { threshold: 0.12 });
-    document.querySelectorAll('.reveal').forEach((element) => observer.observe(element));
-    return () => observer.disconnect();
-  }, [booted]);
-  if (!booted) return <BootScreen onDone={finishBoot} />;
+    const update = () => setTime(new Intl.DateTimeFormat('en', { hour: '2-digit', minute: '2-digit', timeZone: 'Asia/Tashkent', hour12: false }).format(new Date()));
+    update(); const id = setInterval(update, 30000); return () => clearInterval(id);
+  }, []);
+  useEffect(() => {
+    const observer = new IntersectionObserver((entries) => entries.forEach((entry) => entry.isIntersecting && entry.target.classList.add('visible')), { threshold: .12 });
+    document.querySelectorAll('.fade-up').forEach((element) => observer.observe(element)); return () => observer.disconnect();
+  }, []);
 
-  return <main className="os-home">
-    <section className="hero-panel" id="home">
-      <div className="hero-grid" aria-hidden="true" />
-      <div className="hero-copy reveal is-visible">
-        <div className="eyebrow"><span /> AVAILABLE FOR SELECT PROJECTS · 2026</div>
-        <h1>I turn ideas into<br /><em>digital experiences.</em></h1>
-        <p>Fullstack developer from Uzbekistan building fast, thoughtful products where strong engineering meets clean interaction.</p>
-        <div className="hero-actions"><a className="os-button os-button--solid" href="#work">Explore my work <ArrowDownRight size={17} /></a><a className="os-button" href="https://t.me/ergashevdev" target="_blank" rel="noreferrer">Start a project <ArrowUpRight size={17} /></a></div>
-        <div className="hero-metrics"><div><strong>01</strong><span>Focused product</span></div><div><strong>360°</strong><span>Product thinking</span></div><div><strong>UZ</strong><span>Based in Uzbekistan</span></div></div>
+  return <main className="liquid-home">
+    <section className="spatial-hero" id="home">
+      <div className="aurora aurora-one" /><div className="aurora aurora-two" />
+      <div className="hero-status glass-pill"><span className="live-dot" /> Available for selected work</div>
+      <div className="hero-intro fade-up visible">
+        <span className="overline">FULLSTACK DEVELOPER · UZBEKISTAN</span>
+        <h1>Ideas,<br /><span>made tangible.</span></h1>
+        <p>I design and engineer digital products with the precision of code and the fluidity of imagination.</p>
+        <div className="hero-buttons"><a href="#chatly" className="ios-button primary">Explore work <ArrowRight /></a><a href="https://t.me/ergashevdev" target="_blank" rel="noreferrer" className="ios-button glass">Start a conversation <ArrowUpRight /></a></div>
       </div>
-      <div className="core-stage reveal is-visible" aria-label="Interactive technology core">
-        <Suspense fallback={<div className="three-loader">Loading 3D engine…</div>}><ThreeCore /></Suspense>
-        <div className="core-caption"><span>LIVE</span> THREE.JS ENGINE / MOVE YOUR CURSOR</div>
+      <Suspense fallback={<div className="scene-loading">Rendering your experience…</div>}><ThreeCore /></Suspense>
+      <div className="scene-guide glass-pill"><MousePointer2 /> Move to explore</div>
+      <div className="hero-clock"><span>TASHKENT</span><b>{time}</b></div>
+      <a className="scroll-cue" href="#stack"><span>Scroll to enter</span><ChevronDown /></a>
+    </section>
+
+    <section className="stack-section" id="stack">
+      <div className="section-copy fade-up"><span className="overline dark">01 · MY TOOLKIT</span><h2>Technologies I<br /><em>think in.</em></h2><p>Not a logo wall. A connected system of tools I use to turn product ideas into dependable software.</p></div>
+      <div className="stack-grid">
+        {stack.map((item, index) => <article className="stack-card fade-up" style={{ '--accent': item.color, '--delay': `${index * 60}ms` }} key={item.name}>
+          <div className="stack-icon">{item.mark}</div><div><h3>{item.name}</h3><p>{item.note}</p></div><ArrowUpRight />
+        </article>)}
       </div>
     </section>
 
-    <section className="manifesto section-pad reveal"><div className="section-index">01 / APPROACH</div><p>Not just websites.</p><h2>I design the feeling between a click and a result — then engineer the system behind it.</h2></section>
-
-    <section className="work-section section-pad" id="work">
-      <div className="section-heading reveal"><div><span className="section-index">02 / FOUNDER PROJECT</span><h2>One product.<br />Built with intent.</h2></div><a href="https://chatly.uz/" target="_blank" rel="noreferrer">Visit Chatly <ArrowUpRight size={18} /></a></div>
-      <a className="chatly-case reveal" href="https://chatly.uz/" target="_blank" rel="noreferrer">
-        <div className="chatly-brand"><span className="chatly-bolt">ϟ</span><div><b>Chatly</b><small>Instagram automation, made clear.</small></div></div>
-        <div className="chatly-dashboard">
-          <div className="mock-sidebar"><span className="mock-logo">ϟ</span><i /><i /><i /><i /></div>
-          <div className="mock-main"><div className="mock-top"><span>Overview</span><b>Live</b></div><div className="mock-stats"><span><KeyRound /> Keyword automation<strong>Active</strong></span><span><MessageCircle /> Conversations<strong>Unified</strong></span><span><BarChart3 /> Analytics<strong>Visible</strong></span></div><div className="mock-flow"><div><i>WHEN</i><p>Comment contains keyword</p></div><em>→</em><div><i>THEN</i><p>Send a direct message</p></div></div></div>
+    <section className="chatly-section" id="chatly">
+      <div className="chatly-glow" />
+      <div className="chatly-heading fade-up"><span className="overline">02 · FEATURED PRODUCT</span><div className="chatly-title"><span className="chatly-symbol">ϟ</span><h2>Chatly</h2></div><p>Instagram automation, made beautifully simple.</p></div>
+      <div className="product-stage fade-up">
+        <div className="product-window">
+          <div className="window-bar"><div><i /><i /><i /></div><span>app.chatly.uz</span><b>Connected</b></div>
+          <div className="app-shell"><aside><span className="mini-brand">ϟ</span><i className="active" /><i /><i /><i /><i /></aside><div className="app-content"><div className="app-greeting"><div><small>GOOD MORNING</small><h3>Your automation is working.</h3></div><span className="profile-mini">AE</span></div><div className="metric-row"><div><MessageCircle /><span>Conversations</span><strong>Unified</strong></div><div><Braces /><span>Keywords</span><strong>Active</strong></div><div><Bot /><span>Automation</span><strong>Ready</strong></div></div><div className="flow-card"><div className="flow-label"><Sparkles /><span>Live automation</span><b>ON</b></div><div className="flow-nodes"><span><i>WHEN</i>Comment matches keyword</span><ArrowRight /><span><i>THEN</i>Send a direct message</span></div></div></div></div>
         </div>
-        <div className="chatly-story"><span className="project-number">01 / CHATLY.UZ</span><h3>Turn Instagram attention<br />into conversations.</h3><p>{projects[0].description}</p><div className="project-tags">{projects[0].tags.map((tag) => <span key={tag}>{tag}</span>)}</div><div className="case-link">Explore product <ArrowUpRight /></div></div>
-      </a>
+        <div className="floating-note note-one glass-panel"><span>01</span><p>Keyword<br />automation</p></div><div className="floating-note note-two glass-panel"><span>02</span><p>Comment<br />to DM</p></div>
+      </div>
+      <div className="product-story fade-up"><p>Built from product strategy to production code — connecting Instagram accounts, conversations and automations in one focused workspace.</p><div className="product-tags"><span>React</span><span>Node.js</span><span>Instagram API</span><span>MongoDB</span></div><a href="https://chatly.uz" target="_blank" rel="noreferrer">Visit Chatly <ArrowUpRight /></a></div>
     </section>
 
-    <section className="skills-section section-pad" id="skills">
-      <div className="skills-copy reveal"><span className="section-index">03 / CAPABILITIES</span><h2>One developer.<br />The whole stack.</h2><p>From the first data model to the last interaction, I build cohesive products without losing sight of performance, simplicity or people.</p><div className="skill-pills">{skills.map((skill) => <span key={skill}>{skill}</span>)}</div></div>
-      <div className="skill-orbit reveal" aria-label="Technology orbit"><div className="orbit-center"><img src={profilePic} alt="Abdurashid Ergashev" /><span>AE</span></div>{skills.slice(0, 6).map((skill, index) => <span className={`satellite satellite-${index + 1}`} key={skill}>{skill}</span>)}</div>
+    <section className="philosophy-section">
+      <div className="portrait-orb fade-up"><img src={profilePic} alt="Abdurashid Ergashev" /><div className="portrait-ring" /></div>
+      <div className="philosophy-copy fade-up"><span className="overline dark">03 · HOW I WORK</span><h2>Quiet interfaces.<br />Serious engineering.</h2><p>I care about what users feel and what servers endure. Every interaction should feel obvious; every system behind it should be secure, maintainable and ready to grow.</p><div className="principles"><span><Code2 /> Clean architecture</span><span><Layers3 /> Product thinking</span><span><Database /> Reliable data</span><span><Asterisk /> Precise details</span></div></div>
     </section>
 
-    <section className="terminal-section section-pad" id="terminal"><div className="terminal-intro reveal"><span className="section-index">04 / PLAYGROUND</span><h2>Ask the system.</h2><p>A small command line for curious visitors. Try <code>about</code>, <code>skills</code> or <code>projects</code>.</p></div><Terminal /></section>
-
-    <section className="contact-section section-pad reveal" id="contact"><div className="contact-noise" /><span className="section-index">05 / NEXT MOVE</span><h2>Have a hard problem?<br /><em>Let’s make it look easy.</em></h2><div className="contact-actions"><a className="os-button os-button--light" href="https://t.me/ergashevdev" target="_blank" rel="noreferrer"><Send size={18} /> Message on Telegram</a><a className="os-button" href="mailto:hello@ergashev.life"><Mail size={18} /> Send an email</a><a className="icon-link" href="https://github.com/ergashev-dev" target="_blank" rel="noreferrer" aria-label="GitHub">GH</a></div><p className="easter-hint">Psst — old-school gamers know the code ↑ ↑ ↓ ↓ ← → ← → B A</p></section>
+    <section className="final-cta fade-up" id="contact"><div className="cta-orb" /><span className="overline">04 · LET’S BUILD</span><h2>Your next idea<br />deserves depth.</h2><p>Let’s turn it into something people remember.</p><a href="https://t.me/ergashevdev" target="_blank" rel="noreferrer" className="ios-button light"><Send /> Start a project</a></section>
   </main>;
 };
 export default Home;
