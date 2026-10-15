@@ -237,10 +237,13 @@ const BlogPost = () => {
 
   return (
     <>
-      <section className="flex align-items-start" style={{ minHeight: '80vh' }}>
+      <div className="reader-atmosphere" aria-hidden="true"><i /><i /></div>
+      <section className="reader-page-section flex align-items-start" style={{ minHeight: '80vh' }}>
         <div className="container">
           <div className="row article-wrapper justify-center align-top">
             <div className="article-header col-md-8">
+              <Link to="/blog" className="reader-back">← Back to journal</Link>
+              <span className="reader-kicker">FIELD NOTE · ERGASHEV DIGITAL</span>
               <h1 className="title">
                 {loading ? (
                   <span className="skeleton" style={{ width: '85%', height: '36px', display: 'block', marginBottom: '10px' }}></span>

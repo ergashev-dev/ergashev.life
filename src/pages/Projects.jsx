@@ -1,109 +1,36 @@
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
+import { ArrowUpRight, BarChart3, Braces, MessageCircle, Sparkles, Workflow } from 'lucide-react';
+import InteriorHero from '../components/InteriorHero';
 import useSEO from '../hooks/useSEO';
-import { projects } from '../data/projects';
 
 const Projects = () => {
-  const [scrollProgress, setScrollProgress] = useState(0);
-
-  useSEO({
-    title: 'Projects',
-    description: 'Explore featured Fullstack, web applications, and software projects developed by Abdurashid Ergashev.',
-  });
-
+  useSEO({ title: 'Projects — Abdurashid Ergashev', description: 'Explore Chatly, an Instagram automation platform designed and engineered by Abdurashid Ergashev.' });
   useEffect(() => {
-    const handleScroll = () => {
-      const totalHeight = document.body.scrollHeight - window.innerHeight;
-      const progress = totalHeight > 0 ? (window.scrollY / totalHeight) * 100 : 0;
-      setScrollProgress(progress);
-    };
-
-    handleScroll();
-
-    window.addEventListener('scroll', handleScroll);
-    window.addEventListener('resize', handleScroll);
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-      window.removeEventListener('resize', handleScroll);
-    };
+    const element = document.querySelector('.project-device');
+    if (!element) return undefined;
+    const move = (event) => { const box = element.getBoundingClientRect(); element.style.setProperty('--ry', `${((event.clientX - box.left) / box.width - .5) * 6}deg`); element.style.setProperty('--rx', `${-((event.clientY - box.top) / box.height - .5) * 6}deg`); };
+    const leave = () => { element.style.setProperty('--ry', '0deg'); element.style.setProperty('--rx', '0deg'); };
+    element.addEventListener('pointermove', move); element.addEventListener('pointerleave', leave);
+    return () => { element.removeEventListener('pointermove', move); element.removeEventListener('pointerleave', leave); };
   }, []);
-
-  return (
-    <>
-      <section className="section-title">
-        <div className="container">
-          <div className="section-content">
-            <h1>Projects</h1>
-          </div>
-        </div>
-      </section>
-
-      <section className="flex align-items-start" style={{ minHeight: '80vh' }}>
-        <div className="container">
-          <div className="row justify-between align-top">
-            <div id="archive" className="col-md-7">
-              <ul className="list-wrapper projects-list">
-                {projects.map((project) => (
-                  <li key={project.id}>
-                    <a
-                      className="list-item project-item"
-                      href={project.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      <div className="project-thumb-wrapper">
-                        {project.image ? <img src={project.image} alt={project.title} className="project-thumb" loading="lazy" /> : <span className="project-placeholder">ϟ</span>}
-                      </div>
-                      <div className="project-info">
-                        {project.category && (
-                          <div className="date project-meta">{project.category}</div>
-                        )}
-                        <h4 className="project-title">{project.title}</h4>
-                        {project.description && (
-                          <p className="project-description">{project.description}</p>
-                        )}
-                        {project.tags && project.tags.length > 0 && (
-                          <div className="project-tags">
-                            {project.tags.map((tag) => (
-                              <span key={tag} className="project-tag">
-                                {tag}
-                              </span>
-                            ))}
-                          </div>
-                        )}
-                      </div>
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            <div
-              className="subscribe-form col-md-4 sticky"
-              id="mc-embedded-subscribe-form"
-              name="mc-embedded-subscribe-form"
-            >
-              <h6>Subscribe</h6>
-              <p>
-                You can find my latest articles, lectures, and lessons on my Telegram channel{' '}
-                <a
-                  href="https://t.me/ergashevdev"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  @ergashevdev
-                </a>
-                .
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <div className="progress-bar">
-        <div className="bar" style={{ width: `${scrollProgress}%` }}></div>
+  return <main className="interior-page projects-page">
+    <InteriorHero index="01" eyebrow="SELECTED PRODUCT" title="One project." accent="Built deeply." description="I would rather show one real product with depth than fill a page with work that is not mine." />
+    <section className="project-detail">
+      <div className="project-overview">
+        <div className="project-label"><span className="chatly-symbol small">ϟ</span><div><small>FOUNDER PROJECT · 2026</small><h2>Chatly</h2></div></div>
+        <p>Instagram bizneslari uchun conversations, keyword javoblari va comment-to-DM automation’ni bitta toza workspace’da boshqarishga yordam beradigan SaaS platforma.</p>
+        <a className="ios-button primary" href="https://chatly.uz" target="_blank" rel="noreferrer">Open Chatly <ArrowUpRight /></a>
       </div>
-    </>
-  );
+      <div className="project-device" data-tilt>
+        <div className="device-glow" /><div className="device-top"><i /><i /><i /><span>chatly.uz / dashboard</span><b>LIVE</b></div>
+        <div className="device-body"><aside><span>ϟ</span><i className="active" /><i /><i /><i /></aside><div className="device-content"><header><div><small>WELCOME BACK</small><h3>Automation overview</h3></div><span>AE</span></header><div className="device-metrics"><article><MessageCircle /><small>CONVERSATIONS</small><b>Unified</b></article><article><Braces /><small>KEYWORDS</small><b>Active</b></article><article><BarChart3 /><small>ANALYTICS</small><b>Visible</b></article></div><div className="device-flow"><div><Sparkles /><span>Comment contains keyword</span></div><Workflow /><div><MessageCircle /><span>Send a direct message</span></div></div></div></div>
+      </div>
+    </section>
+    <section className="project-breakdown">
+      <div className="breakdown-heading"><span className="overline dark">PRODUCT ANATOMY</span><h2>From attention<br />to conversation.</h2></div>
+      <div className="breakdown-grid"><article><span>01</span><h3>Connect</h3><p>Instagram account onboarding through a controlled OAuth flow.</p></article><article><span>02</span><h3>Automate</h3><p>Keyword and comment triggers turn repeat actions into reusable flows.</p></article><article><span>03</span><h3>Manage</h3><p>Conversations and account context live in one focused dashboard.</p></article><article><span>04</span><h3>Understand</h3><p>Operational states and analytics make automation visible.</p></article></div>
+    </section>
+    <section className="project-tech"><div><span>React</span><span>Node.js</span><span>MongoDB</span><span>Instagram API</span></div><p>Product design · Frontend · Backend · Integration</p></section>
+  </main>;
 };
-
 export default Projects;

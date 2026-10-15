@@ -1,50 +1,9 @@
-
+import { ArrowLeft, BookOpen } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import useSEO from '../hooks/useSEO';
 
 const NotFound = ({ isPostNotFound = false }) => {
-  useSEO({
-    title: isPostNotFound ? 'Article Not Found' : 'Page Not Found',
-    description: 'The requested page or article could not be found.',
-  });
-
-  return (
-    <>
-      <section className="section-title">
-        <div className="container">
-          <div className="section-content">
-            <h1>404</h1>
-          </div>
-        </div>
-      </section>
-
-      <section className="flex align-items-center" style={{ minHeight: '60vh', padding: '40px 0' }}>
-        <div className="container">
-          <div className="row justify-center text-center">
-            <div className="col-lg-8 col-md-10 col-12 not-found-wrapper">
-              <div className="not-found-code">404</div>
-              <h2 className="not-found-title">
-                {isPostNotFound ? 'Article Not Found' : 'Page Not Found'}
-              </h2>
-              <p className="not-found-desc">
-                {isPostNotFound
-                  ? "The article you are looking for might have been removed, renamed, or is temporarily unavailable."
-                  : "Oops! The page you are looking for does not exist or has been moved."}
-              </p>
-              <div className="btns-wrapper" style={{ marginTop: '30px', display: 'flex', justifyContent: 'center', gap: '15px' }}>
-                <Link to="/" className="btn btn-primary">
-                  Back to Home
-                </Link>
-                <Link to="/blog" className="btn btn-secondary">
-                  Read Blog
-                </Link>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-    </>
-  );
+  useSEO({ title: isPostNotFound ? 'Article Not Found' : 'Page Not Found', description: 'The requested page or article could not be found.' });
+  return <main className="lost-page"><div className="lost-grid" /><div className="lost-orbit"><i /><i /><i /></div><span className="lost-code">404</span><p className="overline">SIGNAL LOST</p><h1>{isPostNotFound ? 'This article drifted away.' : 'You found empty space.'}</h1><p className="lost-copy">{isPostNotFound ? 'It may have been renamed, moved or is temporarily unavailable.' : 'The page you are looking for does not exist in this universe.'}</p><div className="lost-actions"><Link to="/" className="ios-button primary"><ArrowLeft /> Back home</Link><Link to="/blog" className="ios-button glass"><BookOpen /> Open journal</Link></div></main>;
 };
-
 export default NotFound;

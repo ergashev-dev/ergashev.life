@@ -1,72 +1,18 @@
-import { useEffect, useState } from 'react';
+import { ArrowUpRight, Blocks, Code2, Database, Layers3, ShieldCheck, Sparkles } from 'lucide-react';
+import profilePic from '../assets/images/ergashev.jpg';
+import InteriorHero from '../components/InteriorHero';
 import useSEO from '../hooks/useSEO';
 
 const About = () => {
-  const [scrollProgress, setScrollProgress] = useState(0);
-
-  useSEO({
-    title: 'About Me',
-    description: 'I am Abdurashid Ergashev, a Fullstack Developer from Uzbekistan specializing in JavaScript, TypeScript, Node.js, React, REST APIs, and Telegram bots.',
-  });
-
-  useEffect(() => {
-    const handleScroll = () => {
-      const totalHeight = document.body.scrollHeight - window.innerHeight;
-      const progress = totalHeight > 0 ? (window.scrollY / totalHeight) * 100 : 0;
-      setScrollProgress(progress);
-    };
-
-    handleScroll();
-
-    window.addEventListener('scroll', handleScroll);
-    window.addEventListener('resize', handleScroll);
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-      window.removeEventListener('resize', handleScroll);
-    };
-  }, []);
-
-  return (
-    <>
-      <section className="section-title">
-        <div className="container">
-          <div className="section-content">
-            <h1>About Me</h1>
-          </div>
-        </div>
-      </section>
-
-      <section id="about-me" className="article-wrapper flex align-items-center" style={{ padding: 0 }}>
-        <div className="container content">
-          <div className="row justify-center">
-            <article className="col-lg-8 col-md-10 col-12">
-              <p>I am <strong>Abdurashid Ergashev</strong>, a <strong>Fullstack Developer</strong> from Uzbekistan.</p>
-
-              <p>I specialize in building backend systems using Python and PHP, along with modern web technologies, with a strong
-                focus on efficiency, simplicity, and reliability.</p>
-
-              <p>I have hands-on experience in developing REST APIs, Telegram bots, and integrating payment systems. I
-                enjoy solving complex backend problems and optimizing systems for better performance.</p>
-
-              <p>Beyond coding, I actively share knowledge through tutorials, blog posts, and personal projects. I
-                believe in continuous learning and constantly improving my skills.</p>
-
-              <p>While my primary focus is backend development, I also have experience with frontend technologies
-                including HTML, CSS, TailwindCSS, and JavaScript.</p>
-
-              <p>You can connect with me and follow my latest updates on my{' '}
-                <a href="https://t.me/ergashevdev" target="_blank" rel="noreferrer">Telegram Channel</a>.
-              </p>
-            </article>
-          </div>
-        </div>
-      </section>
-
-      <div className="progress-bar">
-        <div className="bar" style={{ width: `${scrollProgress}%` }}></div>
-      </div>
-    </>
-  );
+  useSEO({ title: 'About — Abdurashid Ergashev', description: 'Fullstack developer from Uzbekistan working with TypeScript, JavaScript, React, Next.js, NestJS and Node.js.' });
+  return <main className="interior-page about-page">
+    <InteriorHero index="02" eyebrow="ABOUT ME" title="Code with logic." accent="Design with feeling." description="I build products end to end — from the shape of the data to the feeling of the final interaction." />
+    <section className="about-manifesto">
+      <div className="about-portrait"><img src={profilePic} alt="Abdurashid Ergashev" /><span className="portrait-glass">Based in<br /><b>Uzbekistan</b></span></div>
+      <div className="about-story"><span className="overline dark">MY APPROACH</span><h2>I like hard problems<br />with simple outcomes.</h2><p>I am Abdurashid Ergashev, a fullstack developer focused on modern JavaScript and TypeScript products. I work across interface, API, database and automation layers to make the whole product feel coherent.</p><p>My current stack includes React, Next.js, NestJS, Node.js, PostgreSQL and MongoDB. I value clean architecture, secure ownership boundaries and details users should never have to think about.</p><a href="https://t.me/ergashevdev" target="_blank" rel="noreferrer">Let’s connect <ArrowUpRight /></a></div>
+    </section>
+    <section className="values-section"><div className="values-heading"><span className="overline">WHAT I VALUE</span><h2>Four rules.<br />Every build.</h2></div><div className="values-grid"><article><Code2 /><span>01</span><h3>Clarity</h3><p>Readable code and obvious interfaces beat clever complexity.</p></article><article><ShieldCheck /><span>02</span><h3>Trust</h3><p>Security and ownership belong in the architecture, not an afterthought.</p></article><article><Layers3 /><span>03</span><h3>Depth</h3><p>The experience is only as strong as the system supporting it.</p></article><article><Sparkles /><span>04</span><h3>Craft</h3><p>Small details turn functional software into a memorable product.</p></article></div></section>
+    <section className="about-stack"><div><Blocks /><span>Frontend</span><b>React · Next.js · TypeScript</b></div><div><Database /><span>Backend</span><b>NestJS · Node.js · Data</b></div></section>
+  </main>;
 };
-
 export default About;
