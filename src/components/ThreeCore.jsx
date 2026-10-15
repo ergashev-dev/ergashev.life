@@ -1,5 +1,8 @@
 import { useEffect, useRef } from 'react';
 import * as THREE from 'three';
+import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
 
 const technologies = [
   { name: 'TS', color: '#3178c6', position: [-2.7, 1.5, .1] },
@@ -41,7 +44,15 @@ const ThreeCore = () => {
     renderer.outputColorSpace = THREE.SRGBColorSpace;
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
     renderer.toneMappingExposure = 1.25;
+    renderer.setClearColor(0x000000, 0);
     mount.appendChild(renderer.domElement);
+    const renderTarget = new THREE.WebGLRenderTarget(1, 1, { type: THREE.HalfFloatType, format: THREE.RGBAFormat });
+    const composer = new EffectComposer(renderer, renderTarget);
+    const renderPass = new RenderPass(scene, camera);
+    renderPass.clearAlpha = 0;
+    composer.addPass(renderPass);
+    const bloom = new UnrealBloomPass(new THREE.Vector2(1, 1), .58, .72, .78);
+    composer.addPass(bloom);
 
     const universe = new THREE.Group();
     scene.add(universe);
@@ -97,6 +108,22 @@ const ThreeCore = () => {
     const halo = new THREE.Mesh(new THREE.TorusGeometry(1.92, .018, 12, 220), new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: .38 }));
     halo.rotation.x = 1.18; halo.rotation.y = .25; universe.add(halo);
     const haloTwo = halo.clone(); haloTwo.scale.setScalar(1.38); haloTwo.rotation.set(.5, .8, 1); haloTwo.material = halo.material.clone(); haloTwo.material.opacity = .15; universe.add(haloTwo);
+
+    const trails = new THREE.Group();
+    const trailColors = [0x6f8cff, 0xff72cc, 0x69e6ff];
+    for (let index = 0; index < 3; index += 1) {
+      const points = [];
+      for (let step = 0; step < 9; step += 1) {
+        const angle = (step / 8) * Math.PI * 2;
+        const radius = 3.25 + Math.sin(step * 1.7 + index) * .35;
+        points.push(new THREE.Vector3(Math.cos(angle) * radius, Math.sin(angle * (1 + index * .15)) * 1.45, Math.sin(angle) * radius * .38));
+      }
+      const curve = new THREE.CatmullRomCurve3(points, true);
+      const ribbon = new THREE.Mesh(new THREE.TubeGeometry(curve, 150, .012 + index * .004, 5, true), new THREE.MeshBasicMaterial({ color: trailColors[index], transparent: true, opacity: .23, blending: THREE.AdditiveBlending }));
+      ribbon.rotation.set(index * .65, index * .38, index * .72);
+      trails.add(ribbon);
+    }
+    universe.add(trails);
 
     const nodes = [];
     technologies.forEach((technology, index) => {
@@ -156,6 +183,7 @@ const ThreeCore = () => {
     const resize = () => {
       const width = mount.clientWidth, height = mount.clientHeight;
       renderer.setSize(width, height, false); camera.aspect = width / Math.max(height, 1); camera.updateProjectionMatrix();
+      composer.setSize(width, height);
     };
     const clock = new THREE.Clock();
     const animate = () => {
@@ -167,6 +195,7 @@ const ThreeCore = () => {
       glass.rotation.y = time * .08; glass.rotation.x = time * .045;
       inner.scale.setScalar(1 + Math.sin(time * 1.5) * .08);
       halo.rotation.z = time * .13; haloTwo.rotation.z = -time * .08;
+      trails.rotation.y = time * .025; trails.rotation.z = Math.sin(time * .18) * .08;
       raycaster.setFromCamera(pointerVector, camera);
       const hoveredOrb = raycaster.intersectObjects(nodes.map(({ orb }) => orb), false)[0]?.object;
       mount.style.cursor = hoveredOrb ? 'pointer' : 'grab';
@@ -179,14 +208,14 @@ const ThreeCore = () => {
         group.scale.setScalar(nextScale);
       });
       particles.rotation.y = time * .012;
-      renderer.render(scene, camera); animationId = requestAnimationFrame(animate);
+      composer.render(); animationId = requestAnimationFrame(animate);
     };
     resize(); animate();
     mount.addEventListener('pointermove', onPointer, { passive: true }); mount.addEventListener('pointerleave', onLeave); mount.addEventListener('click', onClick); window.addEventListener('scroll', onScroll, { passive: true }); window.addEventListener('resize', resize);
     return () => {
       cancelAnimationFrame(animationId); mount.removeEventListener('pointermove', onPointer); mount.removeEventListener('pointerleave', onLeave); mount.removeEventListener('click', onClick); window.removeEventListener('scroll', onScroll); window.removeEventListener('resize', resize);
       scene.traverse((object) => { object.geometry?.dispose(); if (Array.isArray(object.material)) object.material.forEach((m) => m.dispose()); else object.material?.dispose(); });
-      nodes.forEach(({ texture }) => texture.dispose()); particleGeometry.dispose(); renderer.dispose(); renderer.domElement.remove(); disposables.forEach((item) => item.dispose?.());
+      nodes.forEach(({ texture }) => texture.dispose()); particleGeometry.dispose(); composer.dispose(); renderer.dispose(); renderer.domElement.remove(); disposables.forEach((item) => item.dispose?.());
     };
   }, []);
   return <div className="spatial-canvas" ref={mountRef} aria-label="Interactive 3D technology universe" />;

@@ -19,6 +19,7 @@ const Home = () => {
   const [time, setTime] = useState('');
   const [entered, setEntered] = useState(false);
   const [focusedTech, setFocusedTech] = useState('Interactive stack');
+  const [scrollProgress, setScrollProgress] = useState(0);
   useSEO({ title: 'Abdurashid Ergashev — Fullstack Developer', description: 'Fullstack developer crafting spatial interfaces, reliable backends and automation products with TypeScript, JavaScript, NestJS and Next.js.' });
   useEffect(() => {
     const update = () => setTime(new Intl.DateTimeFormat('en', { hour: '2-digit', minute: '2-digit', timeZone: 'Asia/Tashkent', hour12: false }).format(new Date()));
@@ -37,8 +38,27 @@ const Home = () => {
     const observer = new IntersectionObserver((entries) => entries.forEach((entry) => entry.isIntersecting && entry.target.classList.add('visible')), { threshold: .12 });
     document.querySelectorAll('.fade-up').forEach((element) => observer.observe(element)); return () => observer.disconnect();
   }, []);
+  useEffect(() => {
+    const onScroll = () => {
+      const distance = document.documentElement.scrollHeight - innerHeight;
+      setScrollProgress(distance > 0 ? (scrollY / distance) * 100 : 0);
+    };
+    const cleanups = [...document.querySelectorAll('[data-tilt]')].map((element) => {
+      const move = (event) => {
+        const box = element.getBoundingClientRect();
+        element.style.setProperty('--ry', `${((event.clientX - box.left) / box.width - .5) * 7}deg`);
+        element.style.setProperty('--rx', `${-((event.clientY - box.top) / box.height - .5) * 7}deg`);
+      };
+      const leave = () => { element.style.setProperty('--ry', '0deg'); element.style.setProperty('--rx', '0deg'); };
+      element.addEventListener('pointermove', move); element.addEventListener('pointerleave', leave);
+      return () => { element.removeEventListener('pointermove', move); element.removeEventListener('pointerleave', leave); };
+    });
+    window.addEventListener('scroll', onScroll, { passive: true }); onScroll();
+    return () => { window.removeEventListener('scroll', onScroll); cleanups.forEach((cleanup) => cleanup()); };
+  }, []);
 
   return <main className="liquid-home">
+    <div className="scroll-rail" aria-hidden="true"><i style={{ height: `${scrollProgress}%` }} /><span>{Math.round(scrollProgress).toString().padStart(2, '0')}</span></div>
     <div className={`experience-intro ${entered ? 'is-finished' : ''}`} aria-hidden="true"><div className="intro-glow" /><div className="intro-mark"><span>AE</span><small>CRAFTING DIGITAL MATTER</small></div><div className="intro-progress"><i /></div></div>
     <section className="spatial-hero" id="home">
       <div className="aurora aurora-one" /><div className="aurora aurora-two" />
@@ -52,6 +72,7 @@ const Home = () => {
       <Suspense fallback={<div className="scene-loading">Rendering your experience…</div>}><ThreeCore /></Suspense>
       <div className="scene-guide glass-pill"><MousePointer2 /> Move to explore</div>
       <div className="tech-island glass-panel"><span className="island-wave"><i /><i /><i /><i /></span><div><small>THREE.JS · LIVE</small><b>{focusedTech}</b></div><span className="island-pulse" /></div>
+      {focusedTech !== 'Interactive stack' && <div className="focus-card glass-panel"><small>TECHNOLOGY FOCUS</small><b>{focusedTech.replace(' selected', '')}</b><span>Part of my production stack</span></div>}
       <div className="spatial-badge badge-a glass-panel"><b>60 FPS</b><span>Realtime render</span></div>
       <div className="spatial-badge badge-b glass-panel"><b>8</b><span>Core technologies</span></div>
       <div className="hero-clock"><span>TASHKENT</span><b>{time}</b></div>
@@ -61,17 +82,19 @@ const Home = () => {
     <section className="stack-section" id="stack">
       <div className="section-copy fade-up"><span className="overline dark">01 · MY TOOLKIT</span><h2>Technologies I<br /><em>think in.</em></h2><p>Not a logo wall. A connected system of tools I use to turn product ideas into dependable software.</p></div>
       <div className="stack-grid">
-        {stack.map((item, index) => <article className="stack-card fade-up" style={{ '--accent': item.color, '--delay': `${index * 60}ms` }} key={item.name}>
+        {stack.map((item, index) => <article className="stack-card fade-up" data-tilt style={{ '--accent': item.color, '--delay': `${index * 60}ms` }} key={item.name}>
           <div className="stack-icon">{item.mark}</div><div><h3>{item.name}</h3><p>{item.note}</p></div><ArrowUpRight />
         </article>)}
       </div>
     </section>
 
+    <div className="code-ribbon" aria-hidden="true"><div><span>TYPE → BUILD → SHIP → LEARN →</span><span> TYPESCRIPT / NESTJS / NEXT.JS / REACT / NODE →</span><span> TYPE → BUILD → SHIP → LEARN →</span><span> TYPESCRIPT / NESTJS / NEXT.JS / REACT / NODE →</span></div></div>
+
     <section className="chatly-section" id="chatly">
       <div className="chatly-glow" />
       <div className="chatly-heading fade-up"><span className="overline">02 · FEATURED PRODUCT</span><div className="chatly-title"><span className="chatly-symbol">ϟ</span><h2>Chatly</h2></div><p>Instagram automation, made beautifully simple.</p></div>
       <div className="product-stage fade-up">
-        <div className="product-window">
+        <div className="product-window" data-tilt>
           <div className="window-bar"><div><i /><i /><i /></div><span>app.chatly.uz</span><b>Connected</b></div>
           <div className="app-shell"><aside><span className="mini-brand">ϟ</span><i className="active" /><i /><i /><i /><i /></aside><div className="app-content"><div className="app-greeting"><div><small>GOOD MORNING</small><h3>Your automation is working.</h3></div><span className="profile-mini">AE</span></div><div className="metric-row"><div><MessageCircle /><span>Conversations</span><strong>Unified</strong></div><div><Braces /><span>Keywords</span><strong>Active</strong></div><div><Bot /><span>Automation</span><strong>Ready</strong></div></div><div className="flow-card"><div className="flow-label"><Sparkles /><span>Live automation</span><b>ON</b></div><div className="flow-nodes"><span><i>WHEN</i>Comment matches keyword</span><ArrowRight /><span><i>THEN</i>Send a direct message</span></div></div></div></div>
         </div>
