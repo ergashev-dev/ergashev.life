@@ -17,10 +17,21 @@ const stack = [
 
 const Home = () => {
   const [time, setTime] = useState('');
+  const [entered, setEntered] = useState(false);
+  const [focusedTech, setFocusedTech] = useState('Interactive stack');
   useSEO({ title: 'Abdurashid Ergashev — Fullstack Developer', description: 'Fullstack developer crafting spatial interfaces, reliable backends and automation products with TypeScript, JavaScript, NestJS and Next.js.' });
   useEffect(() => {
     const update = () => setTime(new Intl.DateTimeFormat('en', { hour: '2-digit', minute: '2-digit', timeZone: 'Asia/Tashkent', hour12: false }).format(new Date()));
     update(); const id = setInterval(update, 30000); return () => clearInterval(id);
+  }, []);
+  useEffect(() => {
+    const intro = setTimeout(() => setEntered(true), 1350);
+    const onTechFocus = (event) => {
+      setFocusedTech(`${event.detail} selected`);
+      setTimeout(() => setFocusedTech('Interactive stack'), 2400);
+    };
+    window.addEventListener('techfocus', onTechFocus);
+    return () => { clearTimeout(intro); window.removeEventListener('techfocus', onTechFocus); };
   }, []);
   useEffect(() => {
     const observer = new IntersectionObserver((entries) => entries.forEach((entry) => entry.isIntersecting && entry.target.classList.add('visible')), { threshold: .12 });
@@ -28,6 +39,7 @@ const Home = () => {
   }, []);
 
   return <main className="liquid-home">
+    <div className={`experience-intro ${entered ? 'is-finished' : ''}`} aria-hidden="true"><div className="intro-glow" /><div className="intro-mark"><span>AE</span><small>CRAFTING DIGITAL MATTER</small></div><div className="intro-progress"><i /></div></div>
     <section className="spatial-hero" id="home">
       <div className="aurora aurora-one" /><div className="aurora aurora-two" />
       <div className="hero-status glass-pill"><span className="live-dot" /> Available for selected work</div>
@@ -39,6 +51,9 @@ const Home = () => {
       </div>
       <Suspense fallback={<div className="scene-loading">Rendering your experience…</div>}><ThreeCore /></Suspense>
       <div className="scene-guide glass-pill"><MousePointer2 /> Move to explore</div>
+      <div className="tech-island glass-panel"><span className="island-wave"><i /><i /><i /><i /></span><div><small>THREE.JS · LIVE</small><b>{focusedTech}</b></div><span className="island-pulse" /></div>
+      <div className="spatial-badge badge-a glass-panel"><b>60 FPS</b><span>Realtime render</span></div>
+      <div className="spatial-badge badge-b glass-panel"><b>8</b><span>Core technologies</span></div>
       <div className="hero-clock"><span>TASHKENT</span><b>{time}</b></div>
       <a className="scroll-cue" href="#stack"><span>Scroll to enter</span><ChevronDown /></a>
     </section>

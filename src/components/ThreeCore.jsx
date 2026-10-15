@@ -47,9 +47,48 @@ const ThreeCore = () => {
     scene.add(universe);
     const disposables = [];
 
+    const shaderUniforms = { uTime: { value: 0 }, uPointer: { value: new THREE.Vector2() } };
     const glass = new THREE.Mesh(
-      new THREE.IcosahedronGeometry(1.45, 6),
-      new THREE.MeshPhysicalMaterial({ color: 0xb8caff, emissive: 0x172968, emissiveIntensity: .65, metalness: .05, roughness: .05, transmission: .58, thickness: 1.9, ior: 1.42, clearcoat: 1, clearcoatRoughness: .02, iridescence: 1, iridescenceIOR: 1.6 }),
+      new THREE.IcosahedronGeometry(1.5, 6),
+      new THREE.ShaderMaterial({
+        uniforms: shaderUniforms,
+        transparent: true,
+        blending: THREE.AdditiveBlending,
+        vertexShader: `
+          uniform float uTime;
+          uniform vec2 uPointer;
+          varying vec3 vNormal;
+          varying vec3 vWorld;
+          void main() {
+            vNormal = normalize(normalMatrix * normal);
+            float wave = sin(position.x * 3.2 + uTime * 1.4) * .055;
+            wave += sin(position.y * 4.1 - uTime * 1.1) * .04;
+            wave += sin(position.z * 3.6 + uTime) * .035;
+            vec3 displaced = position + normal * wave;
+            displaced.xy += uPointer * .06 * (position.z + 1.5);
+            vec4 world = modelMatrix * vec4(displaced, 1.0);
+            vWorld = world.xyz;
+            gl_Position = projectionMatrix * viewMatrix * world;
+          }
+        `,
+        fragmentShader: `
+          uniform float uTime;
+          varying vec3 vNormal;
+          varying vec3 vWorld;
+          void main() {
+            vec3 viewDir = normalize(cameraPosition - vWorld);
+            float fresnel = pow(1.0 - abs(dot(vNormal, viewDir)), 2.6);
+            float pulse = .5 + .5 * sin(uTime * 1.2 + vWorld.y * 2.4);
+            vec3 blue = vec3(.24, .43, 1.0);
+            vec3 pearl = vec3(.82, .9, 1.0);
+            vec3 pink = vec3(1.0, .42, .82);
+            vec3 color = mix(blue, pearl, pulse * .55);
+            color = mix(color, pink, fresnel * .38);
+            float alpha = .48 + fresnel * .5;
+            gl_FragColor = vec4(color * (1.0 + fresnel * .8), alpha);
+          }
+        `,
+      }),
     );
     universe.add(glass);
     const inner = new THREE.Mesh(new THREE.IcosahedronGeometry(.78, 4), new THREE.MeshBasicMaterial({ color: 0x7595ff, transparent: true, opacity: .32 }));
@@ -70,7 +109,8 @@ const ThreeCore = () => {
       const label = new THREE.Sprite(new THREE.SpriteMaterial({ map: labelTexture, transparent: true, depthTest: false }));
       label.scale.set(1.12, .56, 1); label.position.z = .57;
       group.add(orb, rim, label); universe.add(group);
-      nodes.push({ group, orb, base: new THREE.Vector3(...technology.position), phase: index * .82, texture: labelTexture });
+      orb.userData.technology = technology.name;
+      nodes.push({ group, orb, base: new THREE.Vector3(...technology.position), phase: index * .82, texture: labelTexture, hovered: false });
 
       const lineGeometry = new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(0, 0, 0), group.position.clone()]);
       const line = new THREE.Line(lineGeometry, new THREE.LineBasicMaterial({ color: new THREE.Color(technology.color), transparent: true, opacity: .1 }));
@@ -96,11 +136,22 @@ const ThreeCore = () => {
     const blue = new THREE.PointLight(0x5985ff, 42, 16); blue.position.set(3, 3, 6); scene.add(blue);
     const pink = new THREE.PointLight(0xff85cf, 28, 14); pink.position.set(-4, -2, 4); scene.add(pink);
 
-    let pointerX = 0, pointerY = 0, targetX = 0, targetY = 0, animationId;
+    const raycaster = new THREE.Raycaster();
+    const pointerVector = new THREE.Vector2(-10, -10);
+    let pointerX = 0, pointerY = 0, targetX = 0, targetY = 0, animationId, scrollDepth = 0;
     const onPointer = (event) => {
       const box = mount.getBoundingClientRect();
       targetX = ((event.clientX - box.left) / box.width - .5) * .65;
       targetY = ((event.clientY - box.top) / box.height - .5) * .45;
+      pointerVector.x = ((event.clientX - box.left) / box.width) * 2 - 1;
+      pointerVector.y = -((event.clientY - box.top) / box.height) * 2 + 1;
+    };
+    const onLeave = () => { pointerVector.set(-10, -10); mount.style.cursor = 'grab'; };
+    const onScroll = () => { scrollDepth = Math.min(window.scrollY / Math.max(window.innerHeight, 1), 1); };
+    const onClick = () => {
+      raycaster.setFromCamera(pointerVector, camera);
+      const hit = raycaster.intersectObjects(nodes.map(({ orb }) => orb), false)[0];
+      if (hit?.object.userData.technology) window.dispatchEvent(new CustomEvent('techfocus', { detail: hit.object.userData.technology }));
     };
     const resize = () => {
       const width = mount.clientWidth, height = mount.clientHeight;
@@ -111,21 +162,29 @@ const ThreeCore = () => {
       const time = clock.getElapsedTime();
       pointerX += (targetX - pointerX) * .035; pointerY += (targetY - pointerY) * .035;
       universe.rotation.y = pointerX; universe.rotation.x = -pointerY;
+      shaderUniforms.uTime.value = time; shaderUniforms.uPointer.value.set(pointerX, pointerY);
+      camera.position.z += ((10.8 - scrollDepth * 1.65) - camera.position.z) * .025;
       glass.rotation.y = time * .08; glass.rotation.x = time * .045;
       inner.scale.setScalar(1 + Math.sin(time * 1.5) * .08);
       halo.rotation.z = time * .13; haloTwo.rotation.z = -time * .08;
+      raycaster.setFromCamera(pointerVector, camera);
+      const hoveredOrb = raycaster.intersectObjects(nodes.map(({ orb }) => orb), false)[0]?.object;
+      mount.style.cursor = hoveredOrb ? 'pointer' : 'grab';
       nodes.forEach(({ group, orb, base, phase }, index) => {
         group.position.y = base.y + Math.sin(time * .55 + phase) * .16;
         group.position.x = base.x + Math.cos(time * .4 + phase) * .08;
         orb.rotation.y = time * (.12 + index * .01);
+        const targetScale = orb === hoveredOrb ? 1.24 : 1;
+        const nextScale = THREE.MathUtils.lerp(group.scale.x, targetScale, .08);
+        group.scale.setScalar(nextScale);
       });
       particles.rotation.y = time * .012;
       renderer.render(scene, camera); animationId = requestAnimationFrame(animate);
     };
     resize(); animate();
-    mount.addEventListener('pointermove', onPointer, { passive: true }); window.addEventListener('resize', resize);
+    mount.addEventListener('pointermove', onPointer, { passive: true }); mount.addEventListener('pointerleave', onLeave); mount.addEventListener('click', onClick); window.addEventListener('scroll', onScroll, { passive: true }); window.addEventListener('resize', resize);
     return () => {
-      cancelAnimationFrame(animationId); mount.removeEventListener('pointermove', onPointer); window.removeEventListener('resize', resize);
+      cancelAnimationFrame(animationId); mount.removeEventListener('pointermove', onPointer); mount.removeEventListener('pointerleave', onLeave); mount.removeEventListener('click', onClick); window.removeEventListener('scroll', onScroll); window.removeEventListener('resize', resize);
       scene.traverse((object) => { object.geometry?.dispose(); if (Array.isArray(object.material)) object.material.forEach((m) => m.dispose()); else object.material?.dispose(); });
       nodes.forEach(({ texture }) => texture.dispose()); particleGeometry.dispose(); renderer.dispose(); renderer.domElement.remove(); disposables.forEach((item) => item.dispose?.());
     };
