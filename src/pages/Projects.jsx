@@ -51,12 +51,7 @@ const Projects = () => {
                       rel="noopener noreferrer"
                     >
                       <div className="project-thumb-wrapper">
-                        <img
-                          src={project.image}
-                          alt={project.title}
-                          className="project-thumb"
-                          loading="lazy"
-                        />
+                        {project.image ? <img src={project.image} alt={project.title} className="project-thumb" loading="lazy" /> : <span className="project-placeholder">ϟ</span>}
                       </div>
                       <div className="project-info">
                         {project.category && (

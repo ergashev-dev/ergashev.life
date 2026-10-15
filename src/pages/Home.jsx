@@ -1,15 +1,17 @@
-import { useCallback, useEffect, useState } from 'react';
-import { ArrowDownRight, ArrowUpRight, Braces, Code2, Database, Layers3, Mail, Send, Sparkles, TerminalSquare } from 'lucide-react';
+import { lazy, Suspense, useCallback, useEffect, useState } from 'react';
+import { ArrowDownRight, ArrowUpRight, BarChart3, KeyRound, Mail, MessageCircle, Send } from 'lucide-react';
 import { projects } from '../data/projects';
 import profilePic from '../assets/images/ergashev.jpg';
 import useSEO from '../hooks/useSEO';
+
+const ThreeCore = lazy(() => import('../components/ThreeCore'));
 
 const skills = ['JavaScript', 'TypeScript', 'React', 'Node.js', 'REST API', 'MongoDB', 'PostgreSQL', 'Telegram Bots'];
 const commands = {
   help: 'Available: about, skills, projects, contact, clear',
   about: 'Fullstack developer from Uzbekistan. I turn complex problems into clear, reliable products.',
   skills: 'JavaScript · TypeScript · React · Node.js · REST APIs · MongoDB · PostgreSQL',
-  projects: 'Raqamli Nazorat · E-Komplektatsiya · M-Gaz',
+  projects: 'Chatly — Instagram automation platform · chatly.uz',
   contact: 'Telegram: @ergashevdev · GitHub: ergashev-dev',
 };
 
@@ -64,23 +66,26 @@ const Home = () => {
         <h1>I turn ideas into<br /><em>digital experiences.</em></h1>
         <p>Fullstack developer from Uzbekistan building fast, thoughtful products where strong engineering meets clean interaction.</p>
         <div className="hero-actions"><a className="os-button os-button--solid" href="#work">Explore my work <ArrowDownRight size={17} /></a><a className="os-button" href="https://t.me/ergashevdev" target="_blank" rel="noreferrer">Start a project <ArrowUpRight size={17} /></a></div>
-        <div className="hero-metrics"><div><strong>03</strong><span>Featured systems</span></div><div><strong>360°</strong><span>Product thinking</span></div><div><strong>UZ</strong><span>Based in Uzbekistan</span></div></div>
+        <div className="hero-metrics"><div><strong>01</strong><span>Focused product</span></div><div><strong>360°</strong><span>Product thinking</span></div><div><strong>UZ</strong><span>Based in Uzbekistan</span></div></div>
       </div>
       <div className="core-stage reveal is-visible" aria-label="Interactive technology core">
-        <div className="orbit orbit-one"><span>API</span></div><div className="orbit orbit-two"><span>UX</span></div>
-        <div className="core-cube"><div className="cube-face cube-front"><Code2 /></div><div className="cube-face cube-back"><Database /></div><div className="cube-face cube-right"><Braces /></div><div className="cube-face cube-left"><Layers3 /></div><div className="cube-face cube-top"><Sparkles /></div><div className="cube-face cube-bottom"><TerminalSquare /></div></div>
-        <div className="core-caption"><span>LIVE</span> CREATIVE ENGINE / 01</div>
+        <Suspense fallback={<div className="three-loader">Loading 3D engine…</div>}><ThreeCore /></Suspense>
+        <div className="core-caption"><span>LIVE</span> THREE.JS ENGINE / MOVE YOUR CURSOR</div>
       </div>
     </section>
 
     <section className="manifesto section-pad reveal"><div className="section-index">01 / APPROACH</div><p>Not just websites.</p><h2>I design the feeling between a click and a result — then engineer the system behind it.</h2></section>
 
     <section className="work-section section-pad" id="work">
-      <div className="section-heading reveal"><div><span className="section-index">02 / SELECTED WORK</span><h2>Built for the real world.</h2></div><a href="/projects">View all projects <ArrowUpRight size={18} /></a></div>
-      <div className="project-showcase">{projects.map((project, index) => <a className="project-tile reveal" href={project.url} target="_blank" rel="noreferrer" key={project.id}>
-        <div className="project-visual"><span className="project-number">0{index + 1}</span><img src={project.image} alt={`${project.title} interface`} /><div className="project-launch"><ArrowUpRight /></div></div>
-        <div className="project-copy"><h3>{project.title}</h3><p>{project.description}</p></div>
-      </a>)}</div>
+      <div className="section-heading reveal"><div><span className="section-index">02 / FOUNDER PROJECT</span><h2>One product.<br />Built with intent.</h2></div><a href="https://chatly.uz/" target="_blank" rel="noreferrer">Visit Chatly <ArrowUpRight size={18} /></a></div>
+      <a className="chatly-case reveal" href="https://chatly.uz/" target="_blank" rel="noreferrer">
+        <div className="chatly-brand"><span className="chatly-bolt">ϟ</span><div><b>Chatly</b><small>Instagram automation, made clear.</small></div></div>
+        <div className="chatly-dashboard">
+          <div className="mock-sidebar"><span className="mock-logo">ϟ</span><i /><i /><i /><i /></div>
+          <div className="mock-main"><div className="mock-top"><span>Overview</span><b>Live</b></div><div className="mock-stats"><span><KeyRound /> Keyword automation<strong>Active</strong></span><span><MessageCircle /> Conversations<strong>Unified</strong></span><span><BarChart3 /> Analytics<strong>Visible</strong></span></div><div className="mock-flow"><div><i>WHEN</i><p>Comment contains keyword</p></div><em>→</em><div><i>THEN</i><p>Send a direct message</p></div></div></div>
+        </div>
+        <div className="chatly-story"><span className="project-number">01 / CHATLY.UZ</span><h3>Turn Instagram attention<br />into conversations.</h3><p>{projects[0].description}</p><div className="project-tags">{projects[0].tags.map((tag) => <span key={tag}>{tag}</span>)}</div><div className="case-link">Explore product <ArrowUpRight /></div></div>
+      </a>
     </section>
 
     <section className="skills-section section-pad" id="skills">
