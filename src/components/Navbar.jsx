@@ -19,7 +19,7 @@ const Navbar = ({ settings }) => {
       <Link className={location.pathname === '/blog' ? 'active' : ''} to="/blog" onClick={close}>Journal</Link>
       <Link className={location.pathname === '/about' ? 'active' : ''} to="/about" onClick={close}>About</Link>
     </nav>
-    <a className="nav-cta" href={settings?.telegram_channel} target="_blank" rel="noreferrer">Let’s talk <i>↗</i></a>
+    <a className="nav-cta" href={settings?.phone}>Let’s talk <i>↗</i></a>
     <button className="nav-toggle" onClick={() => setOpen((value) => !value)} aria-label="Toggle navigation" aria-expanded={open}><span /><span /></button>
   </header>;
 };

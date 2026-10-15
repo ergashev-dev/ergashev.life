@@ -1,8 +1,7 @@
 import { useEffect } from 'react';
 
-const DEFAULT_TITLE = "Abdurashid Ergashev's Blog";
-const DEFAULT_DESCRIPTION =
-  'I am Abdurashid Ergashev, a Fullstack Software Engineer from Uzbekistan with experience in PJavaScript, TypeScript, HTML, CSS, HTML5, CSS3, Bootstrap, TailwindCSS, Git, GitHub, Laravel, React.js,';
+const DEFAULT_TITLE = 'Abdurashid Ergashev — Fullstack TypeScript Developer';
+const DEFAULT_DESCRIPTION = 'Abdurashid Ergashev is a fullstack TypeScript developer from Uzbekistan building refined web products with React, Next.js, NestJS and Node.js.';
 
 /**
  * Custom hook for dynamically updating HTML metadata and OpenGraph / Twitter tags
@@ -10,13 +9,15 @@ const DEFAULT_DESCRIPTION =
 export default function useSEO({
   title,
   description = DEFAULT_DESCRIPTION,
-  image = '/ergashev.png',
+  image = '/abdurashid-ergashev.jpg',
   type = 'website',
   url,
 } = {}) {
   useEffect(() => {
     // 1. Update Title
-    const fullTitle = title ? `${title} - Abdurashid Ergashev` : DEFAULT_TITLE;
+    const fullTitle = title
+      ? (title.includes('Abdurashid Ergashev') ? title : `${title} — Abdurashid Ergashev`)
+      : DEFAULT_TITLE;
     document.title = fullTitle;
 
     // Helper to set or create meta tag
@@ -35,6 +36,15 @@ export default function useSEO({
 
     // 2. Standard Meta Tags
     setMetaTag('name', 'description', description);
+    setMetaTag('name', 'robots', 'index, follow, max-image-preview:large');
+
+    let canonical = document.querySelector('link[rel="canonical"]');
+    if (!canonical) {
+      canonical = document.createElement('link');
+      canonical.setAttribute('rel', 'canonical');
+      document.head.appendChild(canonical);
+    }
+    canonical.setAttribute('href', currentUrl.split('#')[0]);
 
     // 3. OpenGraph Meta Tags
     setMetaTag('property', 'og:title', fullTitle);

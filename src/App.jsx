@@ -8,8 +8,9 @@ import Projects from './pages/Projects';
 import BlogList from './pages/BlogList';
 import BlogPost from './pages/BlogPost';
 import NotFound from './pages/NotFound';
+import profile from './data/profile';
 
-const settings = { resume_file: '/resume.pdf', telegram_channel: 'https://t.me/ergashevdev' };
+const settings = { resume_file: '/resume.pdf', telegram_channel: profile.telegram, phone: profile.phone };
 
 function App() {
   const location = useLocation();
@@ -43,7 +44,7 @@ function App() {
       <Route path="/blog/:slug" element={<BlogPost settings={settings} />} /><Route path="/404" element={<NotFound />} />
       <Route path="*" element={<NotFound />} />
     </Routes>
-    <Footer /><div className="cursor-aura" aria-hidden="true" />
+    <Footer profile={profile} /><div className="cursor-aura" aria-hidden="true" />
     {secretMode && <div className="secret-toast">GOD MODE // unlocked</div>}
   </div>;
 }

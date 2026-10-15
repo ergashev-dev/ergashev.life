@@ -1,6 +1,8 @@
 import { lazy, Suspense, useEffect, useState } from 'react';
-import { ArrowRight, ArrowUpRight, Asterisk, Bot, Braces, ChevronDown, Code2, Database, Layers3, MessageCircle, MousePointer2, Send, Sparkles } from 'lucide-react';
-import profilePic from '../assets/images/ergashev.jpg';
+import { ArrowRight, ArrowUpRight, Asterisk, Bot, Braces, ChevronDown, Code2, Database, Layers3, MessageCircle, MousePointer2, Phone, Send, Sparkles } from 'lucide-react';
+import githubIcon from '../assets/icons/github.svg';
+import linkedinIcon from '../assets/icons/linkedin.svg';
+import profile from '../data/profile';
 import useSEO from '../hooks/useSEO';
 
 const ThreeCore = lazy(() => import('../components/ThreeCore'));
@@ -20,7 +22,7 @@ const Home = () => {
   const [entered, setEntered] = useState(false);
   const [focusedTech, setFocusedTech] = useState('Interactive stack');
   const [scrollProgress, setScrollProgress] = useState(0);
-  useSEO({ title: 'Abdurashid Ergashev — Fullstack Developer', description: 'Fullstack developer crafting spatial interfaces, reliable backends and automation products with TypeScript, JavaScript, NestJS and Next.js.' });
+  useSEO({ title: 'Abdurashid Ergashev — Fullstack TypeScript Developer', description: 'Fullstack developer from Uzbekistan crafting spatial interfaces, reliable backends and automation products with TypeScript, React, Next.js and NestJS.', image: profile.image });
   useEffect(() => {
     const update = () => setTime(new Intl.DateTimeFormat('en', { hour: '2-digit', minute: '2-digit', timeZone: 'Asia/Tashkent', hour12: false }).format(new Date()));
     update(); const id = setInterval(update, 30000); return () => clearInterval(id);
@@ -104,11 +106,28 @@ const Home = () => {
     </section>
 
     <section className="philosophy-section">
-      <div className="portrait-orb fade-up"><img src={profilePic} alt="Abdurashid Ergashev" /><div className="portrait-ring" /></div>
+      <div className="portrait-orb fade-up"><img src={profile.image} alt="Abdurashid Ergashev, fullstack TypeScript developer" /><div className="portrait-ring" /></div>
       <div className="philosophy-copy fade-up"><span className="overline dark">03 · HOW I WORK</span><h2>Quiet interfaces.<br />Serious engineering.</h2><p>I care about what users feel and what servers endure. Every interaction should feel obvious; every system behind it should be secure, maintainable and ready to grow.</p><div className="principles"><span><Code2 /> Clean architecture</span><span><Layers3 /> Product thinking</span><span><Database /> Reliable data</span><span><Asterisk /> Precise details</span></div></div>
     </section>
 
-    <section className="final-cta fade-up" id="contact"><div className="cta-orb" /><span className="overline">04 · LET’S BUILD</span><h2>Your next idea<br />deserves depth.</h2><p>Let’s turn it into something people remember.</p><a href="https://t.me/ergashevdev" target="_blank" rel="noreferrer" className="ios-button light"><Send /> Start a project</a></section>
+    <section className="final-cta fade-up" id="contact">
+      <div className="cta-orb" />
+      <span className="overline">04 · LET’S BUILD</span>
+      <h2>Your next idea<br />deserves depth.</h2>
+      <p>Let’s turn it into something people remember.</p>
+      <div className="contact-console glass-panel">
+        <div className="contact-person">
+          <img src={profile.image} alt="Abdurashid Ergashev" />
+          <div><span><i /> AVAILABLE FOR SELECTED WORK</span><b>{profile.name}</b><small>{profile.role} · {profile.location}</small></div>
+        </div>
+        <div className="contact-actions">
+          <a href={profile.github} target="_blank" rel="noreferrer"><img src={githubIcon} alt="" /><span>GitHub<small>@{profile.githubLabel}</small></span><ArrowUpRight /></a>
+          <a href={profile.linkedin} target="_blank" rel="noreferrer"><img src={linkedinIcon} alt="" /><span>LinkedIn<small>/{profile.linkedinLabel}</small></span><ArrowUpRight /></a>
+          <a href={profile.phone}><Phone /><span>Call me<small>{profile.phoneLabel}</small></span><ArrowUpRight /></a>
+        </div>
+      </div>
+      <a href={profile.telegram} target="_blank" rel="noreferrer" className="ios-button light"><Send /> Start a project</a>
+    </section>
   </main>;
 };
 export default Home;
