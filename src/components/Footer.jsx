@@ -10,7 +10,7 @@ const Footer = ({ profile }) => <footer className="os-footer">
     <a href={profile.phone} aria-label={`Call ${profile.phoneLabel}`}><Phone /> {profile.phoneLabel}</a>
     <a href={profile.resume} target="_blank" rel="noreferrer" aria-label="Open resume PDF"><FileText /> Resume</a>
   </div>
-  <a className="footer-top" href="#home">Back to top ↑</a>
+  <a className="footer-top" href="/#home">Back to top ↑</a>
 </footer>;
 
 export default Footer;

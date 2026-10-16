@@ -100,11 +100,21 @@ const Home = () => {
         <div className="stack-system-head"><span><i /> PRODUCTION STACK</span><small>HOVER TO INSPECT</small></div>
         <div className="stack-grid">
           {stack.map((item, index) => <article
-            className={`stack-card fade-up ${activeStack.name === item.name ? 'is-active' : ''}`}
+            className={`stack-card ${activeStack.name === item.name ? 'is-active' : ''}`}
             data-tilt
+            role="button"
             tabIndex="0"
+            aria-pressed={activeStack.name === item.name}
+            aria-label={`${item.name}: ${item.note}`}
             onPointerEnter={() => setActiveStack(item)}
             onFocus={() => setActiveStack(item)}
+            onClick={() => setActiveStack(item)}
+            onKeyDown={(event) => {
+              if (event.key === 'Enter' || event.key === ' ') {
+                event.preventDefault();
+                setActiveStack(item);
+              }
+            }}
             style={{ '--accent': item.color, '--delay': `${index * 55}ms` }}
             key={item.name}
           >
