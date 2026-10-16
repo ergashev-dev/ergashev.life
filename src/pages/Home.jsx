@@ -7,20 +7,21 @@ import useSEO from '../hooks/useSEO';
 
 const ThreeCore = lazy(() => import('../components/ThreeCore'));
 const stack = [
-  { mark: 'TS', name: 'TypeScript', note: 'Type-safe systems', color: '#3178c6' },
-  { mark: 'JS', name: 'JavaScript', note: 'Web foundations', color: '#f7df1e' },
-  { mark: 'N', name: 'NestJS', note: 'Scalable backends', color: '#e0234e' },
-  { mark: '▲', name: 'Next.js', note: 'Full-stack React', color: '#f7f7f7' },
-  { mark: '⚛', name: 'React', note: 'Interactive interfaces', color: '#61dafb' },
-  { mark: '⬡', name: 'Node.js', note: 'Server runtime', color: '#68a063' },
-  { mark: 'DB', name: 'PostgreSQL', note: 'Reliable data', color: '#53a5dd' },
-  { mark: 'M', name: 'MongoDB', note: 'Flexible storage', color: '#4db33d' },
+  { mark: 'TS', name: 'TypeScript', note: 'Type-safe systems', layer: 'CORE LANGUAGE', color: '#3178c6' },
+  { mark: 'JS', name: 'JavaScript', note: 'Web foundations', layer: 'WEB RUNTIME', color: '#e6c700' },
+  { mark: 'N', name: 'NestJS', note: 'Scalable backends', layer: 'BACKEND', color: '#e0234e' },
+  { mark: '▲', name: 'Next.js', note: 'Full-stack React', layer: 'FRAMEWORK', color: '#242833' },
+  { mark: '⚛', name: 'React', note: 'Interactive interfaces', layer: 'INTERFACE', color: '#38a9d1' },
+  { mark: '⬡', name: 'Node.js', note: 'Server runtime', layer: 'RUNTIME', color: '#4f8f45' },
+  { mark: 'DB', name: 'PostgreSQL', note: 'Reliable data', layer: 'RELATIONAL DATA', color: '#3978a8' },
+  { mark: 'M', name: 'MongoDB', note: 'Flexible storage', layer: 'DOCUMENT DATA', color: '#3f8e3c' },
 ];
 
 const Home = () => {
   const [time, setTime] = useState('');
   const [entered, setEntered] = useState(false);
   const [focusedTech, setFocusedTech] = useState('Interactive stack');
+  const [activeStack, setActiveStack] = useState(stack[0]);
   const [scrollProgress, setScrollProgress] = useState(0);
   useSEO({ title: 'Abdurashid Ergashev — Fullstack TypeScript Developer', description: 'Fullstack developer from Uzbekistan crafting spatial interfaces, reliable backends and automation products with TypeScript, React, Next.js and NestJS.', image: profile.image });
   useEffect(() => {
@@ -82,11 +83,38 @@ const Home = () => {
     </section>
 
     <section className="stack-section" id="stack">
-      <div className="section-copy fade-up"><span className="overline dark">01 · MY TOOLKIT</span><h2>Technologies I<br /><em>think in.</em></h2><p>Not a logo wall. A connected system of tools I use to turn product ideas into dependable software.</p></div>
-      <div className="stack-grid">
-        {stack.map((item, index) => <article className="stack-card fade-up" data-tilt style={{ '--accent': item.color, '--delay': `${index * 60}ms` }} key={item.name}>
-          <div className="stack-icon">{item.mark}</div><div><h3>{item.name}</h3><p>{item.note}</p></div><ArrowUpRight />
-        </article>)}
+      <div className="stack-atmosphere" aria-hidden="true"><i /><i /><span>SYSTEMS</span></div>
+      <div className="section-copy fade-up">
+        <span className="overline dark">01 · CAPABILITY SYSTEM</span>
+        <h2>Technologies I<br /><em>think in.</em></h2>
+        <p>Not a logo wall. A connected system of tools I use to turn product ideas into dependable software.</p>
+        <div className="stack-live" style={{ '--active-stack': activeStack.color }} aria-live="polite">
+          <span><i /> CURRENT SIGNAL</span>
+          <b>{activeStack.name}</b>
+          <small>{activeStack.layer} · {activeStack.note}</small>
+          <div><i /></div>
+        </div>
+        <div className="stack-proof"><span><b>08</b> core tools</span><span><b>04</b> product layers</span><span><b>01</b> connected system</span></div>
+      </div>
+      <div className="stack-system fade-up">
+        <div className="stack-system-head"><span><i /> PRODUCTION STACK</span><small>HOVER TO INSPECT</small></div>
+        <div className="stack-grid">
+          {stack.map((item, index) => <article
+            className={`stack-card fade-up ${activeStack.name === item.name ? 'is-active' : ''}`}
+            data-tilt
+            tabIndex="0"
+            onPointerEnter={() => setActiveStack(item)}
+            onFocus={() => setActiveStack(item)}
+            style={{ '--accent': item.color, '--delay': `${index * 55}ms` }}
+            key={item.name}
+          >
+            <span className="stack-card-index">{(index + 1).toString().padStart(2, '0')}</span>
+            <div className="stack-card-core"><div className="stack-icon">{item.mark}</div><div><small>{item.layer}</small><h3>{item.name}</h3><p>{item.note}</p></div></div>
+            <ArrowUpRight className="stack-card-arrow" />
+            <div className="stack-card-signal" aria-hidden="true"><i /><span /></div>
+          </article>)}
+        </div>
+        <div className="stack-system-foot"><span>IDEA</span><i /><span>INTERFACE</span><i /><span>API</span><i /><span>DATA</span><b>READY TO SHIP</b></div>
       </div>
     </section>
 
@@ -111,22 +139,24 @@ const Home = () => {
     </section>
 
     <section className="final-cta fade-up" id="contact">
-      <div className="cta-orb" />
-      <span className="overline">04 · LET’S BUILD</span>
-      <h2>Your next idea<br />deserves depth.</h2>
-      <p>Let’s turn it into something people remember.</p>
+      <div className="cta-atmosphere" aria-hidden="true"><i /><i /><i /></div>
+      <div className="cta-orb" aria-hidden="true"><i /><i /><span /></div>
+      <div className="cta-availability"><i /> AVAILABLE FOR SELECTED WORK <span>UZ · REMOTE</span></div>
+      <span className="overline">04 · START A SIGNAL</span>
+      <h2><span>Your next idea</span><span>deserves depth.</span></h2>
+      <p>Strategy, interface and engineering — shaped into one memorable product.</p>
       <div className="contact-console glass-panel">
         <div className="contact-person">
           <img src={profile.image} alt="Abdurashid Ergashev" />
-          <div><span><i /> AVAILABLE FOR SELECTED WORK</span><b>{profile.name}</b><small>{profile.role} · {profile.location}</small></div>
+          <div><span><i /> PROJECT INTAKE · OPEN</span><b>{profile.name}</b><small>{profile.role} · {profile.location}</small><div className="contact-specialties"><em>PRODUCT</em><em>FRONTEND</em><em>BACKEND</em></div></div>
         </div>
         <div className="contact-actions">
-          <a href={profile.github} target="_blank" rel="noreferrer"><img src={githubIcon} alt="" /><span>GitHub<small>@{profile.githubLabel}</small></span><ArrowUpRight /></a>
-          <a href={profile.linkedin} target="_blank" rel="noreferrer"><img src={linkedinIcon} alt="" /><span>LinkedIn<small>/{profile.linkedinLabel}</small></span><ArrowUpRight /></a>
-          <a href={profile.phone}><Phone /><span>Call me<small>{profile.phoneLabel}</small></span><ArrowUpRight /></a>
+          <a href={profile.github} target="_blank" rel="noreferrer"><small>01 · CODE</small><img src={githubIcon} alt="" /><span>GitHub<b>@{profile.githubLabel}</b></span><ArrowUpRight /></a>
+          <a href={profile.linkedin} target="_blank" rel="noreferrer"><small>02 · NETWORK</small><img src={linkedinIcon} alt="" /><span>LinkedIn<b>/{profile.linkedinLabel}</b></span><ArrowUpRight /></a>
+          <a href={profile.phone}><small>03 · DIRECT</small><Phone /><span>Call me<b>{profile.phoneLabel}</b></span><ArrowUpRight /></a>
         </div>
       </div>
-      <a href={profile.telegram} target="_blank" rel="noreferrer" className="ios-button light"><Send /> Start a project</a>
+      <div className="cta-launch"><a href={profile.telegram} target="_blank" rel="noreferrer" className="ios-button light"><span>Start a project</span><Send /></a><p><i /> Usually replies within a day</p></div>
     </section>
   </main>;
 };
